@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicas Sustentáveis para o Oceano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --deep-sapphire: #0a2463;
+            --ocean-wave: #3e92cc;
+            --sea-glass: #7ebdc2;
+            --foam-crest: #d1f0f7;
+            --coral-blush: #ff6b6b;
+            --ink: #1a1a2e;
+            --paper: #f9f9f9;
+            --golden-sand: #f7d08a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(62, 146, 204, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(10, 36, 99, 0.05) 0%, transparent 25%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .wave-header {
+            position: relative;
+            background: linear-gradient(145deg, var(--deep-sapphire), var(--ocean-wave));
+            color: var(--paper);
+            text-align: center;
+            padding: 140px 20px 180px;
+            overflow: hidden;
+            clip-path: ellipse(120% 100% at 50% 0%);
+        }
+
+        .wave-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23f9f9f9" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%23f9f9f9" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23f9f9f9"/></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-content h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header-content p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: -100px auto 100px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 16px;
+            padding: 45px;
+            margin-bottom: 45px;
+            box-shadow: 0 20px 50px rgba(10, 36, 99, 0.08);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(126, 189, 194, 0.3);
+        }
+
+        .tip-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(10, 36, 99, 0.15);
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--ocean-wave), var(--deep-sapphire));
+        }
+
+        .tip-card h2 {
+            color: var(--deep-sapphire);
+            font-family: 'Merriweather', serif;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            position: relative;
+            padding-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .tip-card h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 5px;
+            background: linear-gradient(to right, var(--coral-blush), var(--golden-sand));
+            border-radius: 3px;
+        }
+
+        .tip-card h3 {
+            color: var(--ocean-wave);
+            margin: 35px 0 25px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .tip-card h3 i {
+            margin-right: 15px;
+            color: var(--coral-blush);
+            font-size: 1.3em;
+        }
+
+        .tip-card p {
+            margin-bottom: 25px;
+            line-height: 1.9;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .tip-card p strong {
+            color: var(--ocean-wave);
+            font-weight: 600;
+        }
+
+        .tip-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 35px;
+            border: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .tip-image:hover {
+            transform: scale(1.03) rotate(-0.5deg);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--ocean-wave), var(--deep-sapphire));
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            box-shadow: 0 10px 30px rgba(62, 146, 204, 0.3);
+            transition: all 0.4s ease;
+        }
+
+        .icon-box:hover {
+            transform: translateY(-5px) rotate(10deg);
+            box-shadow: 0 15px 40px rgba(62, 146, 204, 0.4);
+            border-radius: 25% 75% 25% 75% / 60% 40% 60% 40%;
+        }
+
+        footer {
+            background: linear-gradient(to right, var(--deep-sapphire), var(--ocean-wave));
+            color: var(--paper);
+            text-align: center;
+            padding: 80px 20px 50px;
+            position: relative;
+            clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="white" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="white" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="white"/></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            transform: rotate(180deg);
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-content p {
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .footer-content p:first-child {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .social-icons a {
+            color: var(--paper);
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .social-icons a:hover {
+            color: var(--golden-sand);
+            transform: translateY(-5px) scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animações */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .header-content h1 {
+                font-size: 3rem;
+            }
+            
+            .container {
+                margin: -80px auto 80px;
+            }
+            
+            .tip-card {
+                padding: 35px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .wave-header {
+                padding: 120px 20px 160px;
+                clip-path: ellipse(150% 100% at 50% 0%);
+            }
+            
+            .header-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header-content p {
+                font-size: 1.1rem;
+            }
+            
+            .container {
+                margin: -70px auto 70px;
+            }
+            
+            .tip-card {
+                padding: 30px;
+            }
+            
+            .tip-card h2 {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+            
+            .tip-card h3 {
+                font-size: 1.4rem;
+                margin: 30px 0 20px;
+            }
+            
+            .icon-box {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wave-header {
+                padding: 100px 15px 140px;
+                clip-path: ellipse(180% 100% at 50% 0%);
+            }
+            
+            .header-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header-content p {
+                font-size: 1rem;
+            }
+            
+            .container {
+                margin: -60px auto 60px;
+                padding: 0 15px;
+            }
+            
+            .tip-card {
+                padding: 25px 20px;
+            }
+            
+            .tip-card h2 {
+                font-size: 1.8rem;
+                padding-bottom: 15px;
+            }
+            
+            .tip-card h2::after {
+                width: 60px;
+                height: 4px;
+            }
+            
+            .tip-card h3 {
+                font-size: 1.3rem;
+                margin: 25px 0 15px;
+            }
+            
+            .tip-card p {
+                font-size: 1rem;
+            }
+            
+            .icon-box {
+                width: 55px;
+                height: 55px;
+                font-size: 1.6rem;
+                margin-bottom: 25px;
+                border-radius: 15px;
+            }
+            
+            footer {
+                padding: 70px 20px 40px;
+            }
+            
+            .footer-content p:first-child {
+                font-size: 1.2rem;
+            }
+            
+            .social-icons a {
+                font-size: 1.8rem;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabeçalho com onda -->
+    <header class="wave-header">
+        <div class="header-content">
+            <h1>Dicas Sustentáveis para o Oceano</h1>
+            <p>Aqui você encontrará dicas práticas para contribuir com a sustentabilidade dos oceanos e proteger a vida marinha.</p>
+        </div>
+    </header>
+
+    <!-- Container principal para as dicas -->
+    <div class="container">
+
+        <!-- Dica 1: Reduzir o uso de plásticos -->
+        <article class="tip-card">
+            <div class="icon-box">
+                <i class="fas fa-ban"></i>
+            </div>
+            <h2>Reduzir o Uso de Plásticos</h2>
+            
+            <h3><i class="fas fa-question-circle"></i> Por que fazer?</h3>
+            <p>O <strong>plástico</strong> é um dos maiores poluentes dos oceanos, causando danos à vida marinha e aos ecossistemas. Mais de 8 milhões de toneladas de plástico entram nos oceanos a cada ano.</p>
+            
+            <h3><i class="fas fa-lightbulb"></i> Como fazer?</h3>
+            <p>Use <strong>sacolas reutilizáveis</strong>, evite produtos com embalagens plásticas desnecessárias, opte por itens duráveis como garrafas de água de metal ou vidro, e recuse canudos plásticos.</p>
+            
+            <h3><i class="fas fa-water"></i> Como isso impacta?</h3>
+            <p>Reduzir o plástico diminui a quantidade de resíduos que chegam aos oceanos, protegendo <strong>animais marinhos</strong> que confundem plástico com comida e mantendo os ecossistemas saudáveis para as futuras gerações.</p>
+            
+            <img src="https://cdn.pixabay.com/photo/2019/07/14/11/33/earth-4336775_1280.jpg" alt="Reduzir o uso de plásticos" class="tip-image">
+        </article>
+
+        <!-- Dica 2: Consumir peixes de forma sustentável -->
+        <article class="tip-card">
+            <div class="icon-box">
+                <i class="fas fa-fish"></i>
+            </div>
+            <h2>Consumir Peixes de Forma Sustentável</h2>
+            
+            <h3><i class="fas fa-question-circle"></i> Por que fazer?</h3>
+            <p>A <strong>pesca predatória</strong> esgota os estoques de peixes, danifica os ecossistemas marinhos e ameaça a biodiversidade. Cerca de 90% dos estoques de peixes estão totalmente explorados ou sobre-explorados.</p>
+            
+            <h3><i class="fas fa-lightbulb"></i> Como fazer?</h3>
+            <p>Escolha peixes com <strong>certificação sustentável</strong> (como MSC), evite espécies ameaçadas, diversifique seu consumo e prefira peixes locais. Consulte guias de consumo responsável como os do Greenpeace.</p>
+            
+            <h3><i class="fas fa-water"></i> Como isso impacta?</h3>
+            <p>O consumo sustentável ajuda a manter o equilíbrio dos <strong>ecossistemas marinhos</strong>, garante a sobrevivência das espécies e apoia pescadores que adotam práticas responsáveis.</p>
+            
+            <img src="https://cdn.pixabay.com/photo/2016/03/27/22/22/fish-1284355_1280.jpg" alt="Consumo sustentável de peixes" class="tip-image">
+        </article>
+
+        <!-- Dica 3: Participar de mutirões de limpeza -->
+        <article class="tip-card">
+            <div class="icon-box">
+                <i class="fas fa-hands-helping"></i>
+            </div>
+            <h2>Participar de Mutirões de Limpeza</h2>
+            
+            <h3><i class="fas fa-question-circle"></i> Por que fazer?</h3>
+            <p>O <strong>lixo</strong> nas praias e oceanos prejudica a vida marinha, a qualidade da água e a saúde humana. Animais marinhos frequentemente ficam presos ou ingerem detritos.</p>
+            
+            <h3><i class="fas fa-lightbulb"></i> Como fazer?</h3>
+            <p>Junte-se a grupos locais que organizam <strong>mutirões de limpeza</strong> de praias e rios. Você também pode organizar sua própria ação com amigos e familiares, sempre com segurança.</p>
+            
+            <h3><i class="fas fa-water"></i> Como isso impacta?</h3>
+            <p>Remover o lixo das praias evita que ele chegue ao oceano, protegendo os <strong>animais</strong>, melhorando a saúde dos ecossistemas e conscientizando a comunidade sobre o problema.</p>
+            
+            <img src="https://cdn.pixabay.com/photo/2017/09/12/18/30/beach-2742306_1280.jpg" alt="Mutirão de limpeza" class="tip-image">
+        </article>
+
+        <!-- Dica 4: Evitar produtos químicos nocivos -->
+        <article class="tip-card">
+            <div class="icon-box">
+                <i class="fas fa-flask"></i>
+            </div>
+            <h2>Evitar Produtos Químicos Nocivos</h2>
+            
+            <h3><i class="fas fa-question-circle"></i> Por que fazer?</h3>
+            <p>Produtos químicos, como certos <strong>protetores solares</strong> (com oxibenzona) e detergentes, podem contaminar a água, prejudicar a vida marinha e acelerar o branqueamento de corais.</p>
+            
+            <h3><i class="fas fa-lightbulb"></i> Como fazer?</h3>
+            <p>Use protetores solares <strong>biodegradáveis</strong> (livres de oxibenzona e octinoxato), produtos de limpeza ecológicos, evite pesticidas em jardins e descarte produtos químicos corretamente.</p>
+            
+            <h3><i class="fas fa-water"></i> Como isso impacta?</h3>
+            <p>Reduzir o uso de químicos nocivos protege os <strong>corais</strong> (que abrigam 25% da vida marinha) e outras espécies sensíveis, mantendo a qualidade da água e a saúde dos ecossistemas.</p>
+            
+            <img src="https://cdn.pixabay.com/photo/2017/09/12/18/30/coral-2742308_1280.jpg" alt="Evitar produtos químicos nocivos" class="tip-image">
+        </article>
+    </div>
+</body>
+</html>
