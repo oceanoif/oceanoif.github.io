@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>saiba mais</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0077b6;
+            --deep-blue: #023e8a;
+            --turquoise: #48cae4;
+            --light-blue: #caf0f8;
+            --white: #ffffff;
+            --wave-blue: #00b4d8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-blue), var(--turquoise));
+            min-height: 100vh;
+            padding: 40px 20px;
+            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/18/20/waves-153547_1280.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        header h1 {
+            color: var(--deep-blue);
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header p {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .nav-card {
+            background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--white);
+            box-shadow: 0 10px 20px rgba(0, 59, 149, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            z-index: 1;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 59, 149, 0.3);
+        }
+
+        .nav-card:active {
+            transform: translateY(0);
+        }
+
+        .nav-icon {
+            font-size: 2.5rem;
+            margin-right: 25px;
+            z-index: 2;
+            color: var(--turquoise);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .nav-content {
+            z-index: 2;
+            flex-grow: 1;
+        }
+
+        .nav-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .nav-card p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .wave-decoration {
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%2300b4d8" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%2300b4d8" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%2300b4d8"/></svg>');
+            background-size: cover;
+            z-index: 1;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Delay para cada card */
+        .nav-card:nth-child(1) { animation-delay: 0.1s; }
+        .nav-card:nth-child(2) { animation-delay: 0.2s; }
+        .nav-card:nth-child(3) { animation-delay: 0.3s; }
+        .nav-card:nth-child(4) { animation-delay: 0.4s; }
+        .nav-card:nth-child(5) { animation-delay: 0.5s; }
+        .nav-card:nth-child(6) { animation-delay: 0.6s; }
+        .nav-card:nth-child(7) { animation-delay: 0.7s; }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-card {
+                padding: 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .nav-card h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Explorando os Oceanos</h1>
+            <p>Escolha e clique em uma categoria para mergulhar no conhecimento sobre nossos mares e sua preservação</p>
+        </header>
+
+        <div class="nav-grid">
+            <a href="gamesesco.html" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <div class="nav-content">
+                    <h2>Games</h2>
+                    <p>Jogos educativos sobre a vida marinha e conservação dos oceanos</p>
+                </div>
+                <div class="wave-decoration"></div>
+            </a>
+
+            <a href="info.html" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="nav-content">
+                    <h2>Informações sobre o oceano</h2>
+                    <p>Dados e curiosidades sobre os mares e sua importância para o planeta</p>
+                </div>
+                <div class="wave-decoration"></div>
+            </a>
+
+            <a href="artigosvideos.html" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="nav-content">
+                    <h2>Artigos e vídeos</h2>
+                    <p>Conteúdo educativo e documentários sobre a vida marinha</p>
+                </div>
+                <div class="wave-decoration"></div>
+            </a>
+
+            <a href="dicas.html" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="nav-content">
+                    <h2>Dicas sustentáveis</h2>
+                    <p>Como ajudar na preservação dos oceanos no dia a dia</p>
+                </div>
+                <div class="wave-decoration"></div>
+            </a>
+
+            <a href="jornal.html" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="nav-content">
+                    <h2>Jornal oceano</h2>
+                    <p>Notícias e atualizações sobre os oceanos e vida marinha</p>
+                </div>
+                <div class="wave-decoration"></div>
+            </a>
+
+            <a href="historia.html" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="nav-content">
+                    <h2>História do oceano</h2>
+                    <p>A evolução dos oceanos e sua relação com a humanidade</p>
+                </div>
+                <div class="wave-decoration"></div>
+            </a>
+
+            <a href="artes.html" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="nav-content">
+                    <h2>Artes e objetos</h2>
+                    <p>Criações artísticas e artesanatos inspirados no mar</p>
+                </div>
+                <div class="wave-decoration"></div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Efeito de onda ao passar o mouse
+        document.querySelectorAll('.nav-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                this.style.setProperty('--mouse-x', x);
+                this.style.setProperty('--mouse-y', y);
+            });
+        });
+    </script>
+</body>
+</html>
