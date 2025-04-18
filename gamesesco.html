@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogos Oceânicos</title>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --deep-blue: #005f73;
+            --ocean-blue: #0a9396;
+            --light-blue: #94d2bd;
+            --turquoise: #38d9d9;
+            --foam: #e9f5f9;
+            --gold: #ee9b00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--deep-blue), var(--ocean-blue));
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(212, 251, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(212, 251, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .wave-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%2338d9d9" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%2338d9d9" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%2338d9d9"/></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: -1;
+            animation: waveMove 15s linear infinite;
+        }
+
+        @keyframes waveMove {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, var(--turquoise), var(--foam));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .retangulos-container {
+            width: 90%;
+            max-width: 500px;
+            margin: 20px auto;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .retangulo {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 1.2em;
+            box-sizing: border-box;
+            box-shadow: 0 8px 32px rgba(0, 95, 115, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .retangulo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+
+        .retangulo:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 40px rgba(0, 95, 115, 0.4);
+            border-color: var(--turquoise);
+        }
+
+        .retangulo:hover::before {
+            left: 100%;
+        }
+
+        .retangulo i {
+            margin-right: 15px;
+            font-size: 1.4em;
+            color: var(--turquoise);
+        }
+
+        .ranking-link {
+            background: rgba(238, 155, 0, 0.2);
+            border-color: var(--gold);
+        }
+
+        .ranking-link i {
+            color: var(--gold);
+        }
+
+        .ranking-link:hover {
+            background: rgba(238, 155, 0, 0.3);
+        }
+
+        .vlibras-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--turquoise);
+            color: var(--deep-blue);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        #back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: var(--light-blue);
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+            
+            .retangulo {
+                padding: 15px 10px;
+                height: 60px;
+                font-size: 1em;
+            }
+            
+            .retangulo i {
+                margin-right: 10px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bolhas de fundo -->
+    <div id="bubbles-container"></div>
+    
+    <!-- Onda no rodapé -->
+    <div class="wave-bg"></div>
+
+    <!-- VLibras -->
+    <div class="vlibras-container">
+        <div vw class="enabled">
+            <div vw-access-button class="active"></div>
+            <div vw-plugin-wrapper></div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho -->
+    <div class="header">
+        <h1>Jogos Oceânicos</h1>
+        <p>escolha e Mergulhe em aventuras marinhas e descubra o mundo submarino</p>
+    </div>
+
+    <!-- Menu de Jogos -->
+    <div class="retangulos-container">
+        <a href="forca.html" class="retangulo">
+            <i class="fas fa-font"></i> Forca Marinha
+        </a>
+        <a href="quiz.html" class="retangulo">
+            <i class="fas fa-question-circle"></i> Quiz Oceânico
+        </a>
+        <a href="cartas.html" class="retangulo">
+            <i class="fas fa-brain"></i> Memória Subaquática
+        </a>
+        <a href="coletadelixo.html" class="retangulo">
+            <i class="fas fa-trash-alt"></i> Limpeza dos Mares
+        </a>
+        <a href="peixexlixo.html" class="retangulo">
+            <i class="fas fa-fish"></i> Peixe vs Poluição
+        </a>
+        <a href="letreco.html" class="retangulo">
+            <i class="fas fa-keyboard"></i> Letreco Marinho
+        </a>
+        
+        <a href="ranking.html" class="retangulo ranking-link">
+            <i class="fas fa-trophy"></i> Ranking dos Navegadores
+        </a>
+    </div>
+
+    <!-- Botão de Voltar ao Topo -->
+    <button id="back-to-top" title="Voltar ao topo">↑</button>
+
+    <script>
+        // Inicializa VLibras
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+
+        // Botão de voltar ao topo
+        window.onscroll = function() {
+            var button = document.getElementById('back-to-top');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                button.style.display = 'block';
+            } else {
+                button.style.display = 'none';
+            }
+        };
+        
+        document.getElementById('back-to-top').onclick = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
+
+        // Cria bolhas animadas
+        function createBubbles() {
+            const container = document.getElementById('bubbles-container');
+            const bubbleCount = 20;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Tamanho aleatório entre 5px e 20px
+                const size = Math.random() * 15 + 5;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Posição inicial aleatória
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.bottom = `-${size}px`;
+                
+                // Duração da animação aleatória entre 10s e 20s
+                const duration = Math.random() * 10 + 10;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                // Atraso inicial aleatório
+                bubble.style.animationDelay = `${Math.random() * 10}s`;
+                
+                container.appendChild(bubble);
+            }
+        }
+
+        // Inicia as bolhas quando a página carrega
+        window.onload = function() {
+            createBubbles();
+        };
+    </script>
+</body>
+</html>
