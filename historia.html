@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>História dos Oceanos</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f8ff;
+      color: #333;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      background: linear-gradient(135deg, #007BFF, #005BB5);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    header p {
+      font-size: 1rem;
+      margin-top: 10px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #005BB5;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links li a:hover {
+      color: #40E0D0;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      height: 3px;
+      width: 25px;
+      background-color: white;
+      margin: 4px 0;
+      transition: 0.4s;
+    }
+
+    /* Seções */
+    section {
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      animation: fadeIn 1s ease-out;
+    }
+
+    section h2 {
+      font-size: 2rem;
+      color: #005BB5;
+      margin-bottom: 20px;
+      text-align: center;
+      animation: slideIn 1s ease-out;
+    }
+
+    section p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+
+    section img {
+      width: 100%;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(45deg, #007BFF, #40E0D0);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-top: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    footer {
+      background: linear-gradient(135deg, #005BB5, #007BFF);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    /* Media Queries para Responsividade */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 0.9rem;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        background-color: #005BB5;
+        padding: 10px 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      section h2 {
+        font-size: 1.8rem;
+      }
+
+      section p {
+        font-size: 0.9rem;
+      }
+
+      .cta-button {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      header p {
+        font-size: 0.8rem;
+      }
+
+      section h2 {
+        font-size: 1.5rem;
+      }
+
+      section p {
+        font-size: 0.8rem;
+      }
+
+      .cta-button {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>História dos Oceanos</h1>
+    <p>Descubra a fascinante jornada dos oceanos ao longo da história da Terra.</p>
+  </header>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#linha-do-tempo">Linha do Tempo</a></li>
+      <li><a href="#eventos-historicos">Eventos Históricos</a></li>
+      <li><a href="#evolucao-vida-marinha">Evolução da Vida Marinha</a></li>
+      <li><a href="#ameacas-conservacao">Ameaças e Conservação</a></li>
+    </ul>
+  </nav>
+
+  <!-- Seções -->
+  <section id="linha-do-tempo">
+    <h2>Linha do Tempo dos Oceanos</h2>
+    <p>
+      A história dos oceanos remonta a bilhões de anos. Eles se formaram há cerca de 4 bilhões de anos, quando a Terra esfriou o suficiente para permitir que a água em estado líquido se acumulasse na superfície. Desde então, os oceanos passaram por diversas transformações, influenciando o clima e a vida no planeta.
+    </p>
+    <img src="https://cdn.pixabay.com/photo/2017/10/20/18/07/earth-2873001_1280.jpg" alt="Linha do Tempo dos Oceanos">
+    <p>
+      A linha do tempo dos oceanos inclui eventos como a formação das primeiras moléculas orgânicas, o surgimento da vida marinha e as mudanças climáticas que moldaram os ecossistemas ao longo das eras geológicas.
+    </p>
+  </section>
+
+  <section id="eventos-historicos">
+    <h2>Eventos Históricos</h2>
+    <p>
+      Os oceanos foram palco de eventos históricos importantes, como a extinção dos dinossauros há 65 milhões de anos, causada por um asteróide que impactou a Terra e gerou tsunamis gigantescos. Outro evento marcante foi a Era do Gelo, que alterou o nível dos oceanos e a distribuição da vida marinha.
+    </p>
+    <img src="https://cdn.pixabay.com/photo/2016/11/14/03/06/woman-1822639_1280.jpg" alt="Eventos Históricos">
+    <p>
+      Além disso, os oceanos testemunharam a evolução humana, desde as primeiras migrações por rotas marítimas até a exploração e colonização de novos continentes.
+    </p>
+  </section>
+
+  <section id="evolucao-vida-marinha">
+    <h2>Evolução da Vida Marinha</h2>
+    <p>
+      A vida marinha começou há cerca de 3,5 bilhões de anos, com os primeiros microrganismos. Ao longo do tempo, os oceanos viram o surgimento de criaturas complexas, como peixes, répteis marinhos, mamíferos e corais. A biodiversidade marinha é um testemunho da incrível capacidade de adaptação da vida.
+    </p>
+    <img src="https://cdn.pixabay.com/photo/2012/03/04/00/03/jellyfish-21741_1280.jpg" alt="Evolução da Vida Marinha">
+    <p>
+      Hoje, os oceanos abrigam milhões de espécies, desde o plâncton microscópico até as gigantescas baleias-azuis, cada uma desempenhando um papel crucial no ecossistema marinho.
+    </p>
+  </section>
+
+  <section id="ameacas-conservacao">
+    <h2>Ameaças e Conservação</h2>
+    <p>
+      Atualmente, os oceanos enfrentam sérias ameaças, como a poluição por plásticos, a sobrepesca, a acidificação das águas e as mudanças climáticas. Esses problemas não só afetam a vida marinha, mas também impactam diretamente a humanidade.
+    </p>
+    <img src="https://cdn.pixabay.com/photo/2020/02/17/06/00/pollution-4855507_1280.jpg" alt="Ameaças e Conservação">
+    <p>
+      Para proteger os oceanos, é essencial adotar práticas sustentáveis, como reduzir o uso de plásticos, apoiar a pesca sustentável e combater as mudanças climáticas. A criação de áreas marinhas protegidas também é crucial para preservar a biodiversidade.
+    </p>
+    <a href="#linha-do-tempo" class="cta-button">Voltar ao Topo</a>
+  </section>
+
+
+  <script>
+    function toggleMenu() {
+      const navLinks = document.querySelector('.nav-links');
+      navLinks.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
