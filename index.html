@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Salvando os Oceanos">
+    <meta property="og:description" content="Mergulhe nos Segredos dos Oceanos">
+    <meta property="og:image" content="https://cdn.pixabay.com/photo/2013/11/01/11/13/dolphin-203875_1280.jpg">
+    <meta property="og:type" content="website">
+    <title>Salvando os Oceanos</title>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <style>
+        :root {
+            --primary-blue: #007BFF;
+            --deep-blue: #005BB5;
+            --turquoise: #40E0D0;
+            --white: #FFFFFF;
+            --light-blue: #E6F7FF;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            color: var(--primary-blue);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: var(--deep-blue);
+            animation: fadeIn 1s ease-in;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--deep-blue);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .navbar .hamburger span {
+            height: 3px;
+            width: 25px;
+            background-color: var(--white);
+            margin: 4px 0;
+            transition: 0.4s;
+        }
+
+        .navbar .nav-links {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            text-align: center;
+        }
+
+        .navbar .nav-links.active {
+            display: flex;
+        }
+
+        .navbar .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            padding: 10px;
+        }
+
+        .navbar .nav-links a:hover {
+            color: var(--turquoise);
+        }
+
+        /* Header Styles */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: slideDown 1s ease-out;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 20px;
+            animation: fadeIn 1.5s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .image-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 20px;
+            animation: fadeIn 1s ease-out;
+            background-color: white;
+            text-align: center;
+        }
+
+        section p {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--deep-blue);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            animation: slideIn 1s ease-out;
+        }
+
+        /* Marine Life Carousel */
+        .carousel {
+            display: flex;
+            overflow-x: none;
+            gap: 2px;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+            align-items: center;
+            animation: slideIn 1.2s ease-out;
+            justify-content: center;
+        }
+
+        .carousel img {
+            width: 25%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .carousel img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Threats Section */
+        .infographics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+            animation: slideUp 1s ease-out;
+        }
+
+        .infographic {
+            background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+            color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .infographic:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* CTA Buttons */
+        .cta-button {
+            background: linear-gradient(45deg, var(--primary-blue), var(--turquoise));
+            color: var(--white);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .cta-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Avaliações Section */
+        .reviews-section {
+            background-color: var(--light-blue);
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviews-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://cdn.pixabay.com/photo/2013/07/12/18/20/waves-153547_1280.png');
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .reviews-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .review-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 91, 181, 0.2);
+            margin-bottom: 40px;
+            border: 2px solid var(--turquoise);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .review-form h3 {
+            color: var(--deep-blue);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--deep-blue);
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--turquoise);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Seção de Visualização de Avaliações */
+        .reviews-display {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 91, 181, 0.1);
+            margin-top: 40px;
+            border: 2px solid var(--turquoise);
+        }
+
+        .reviews-display h3 {
+            color: var(--deep-blue);
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .reviews-display h3::after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--turquoise));
+            margin: 10px auto 0;
+        }
+
+        .reviews-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .review-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 91, 181, 0.1);
+            position: relative;
+            border: 1px solid var(--turquoise);
+            transition: transform 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 91, 181, 0.2);
+        }
+
+        .review-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--turquoise));
+            border-radius: 15px 15px 0 0;
+        }
+
+        .review-author {
+            font-weight: bold;
+            color: var(--deep-blue);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .review-text {
+            color: #555;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .review-date {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 15px;
+        }
+
+        .no-reviews {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+            grid-column: 1 / -1;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1a2a6c, #261fb2, #7d2dfd);
+            color: var(--white);
+            padding: 0px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+            animation: slideUp 1s ease-out, gradientShift 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-links a {
+            color: white;
+        }
+
+        .footer-content {
+            max-width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            animation: fadeIn 1.5s ease-out;
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .carousel {
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            .carousel img {
+                width: 90%;
+                height: auto;
+            }
+
+            .reviews-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel img {
+                width: 200px;
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+
+<body id="top">
+
+    <div class="vlibras-container">
+        <div vw class="enabled">
+            <div vw-access-button class="active"></div>
+            <div vw-plugin-wrapper></div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="hamburger" onclick="toggleNav()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="gamesesco.html">Games</a>
+            <a href="info.html">Informações sobre o oceano</a>
+            <a href="artigosvideos.html">Artigos e vídeos</a>
+            <a href="dicas.html">Dicas sustentáveis</a>
+            <a href="jornal.html">Jornal oceano</a>
+            <a href="historia.html">História do oceano</a>
+            <a href="artes.html">Artes e objetos</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="image-bg">
+            <img src="https://cdn.pixabay.com/photo/2017/04/07/21/22/waves-2211925_1280.jpg" alt="Ondas do oceano">
+        </div>
+        <div class="hero-content">
+            <h1>Mergulhe nos Segredos dos Oceanos</h1>
+            <p>Explore a importância dos oceanos para o planeta e descubra como podemos protegê-los.</p>
+            <a href="saibamais.html"><button class="cta-button">Saiba Mais</button></a>
+        </div>
+    </header>
+
+    <main>
+        <section id="deus">
+            <p>A divisão primordial da água, um evento crucial na história do nosso planeta, criou a base para os sistemas oceânicos e atmosféricos que, desde então, moldam a Terra e influenciam o clima global</p>
+        </section>
+        <section id="introduction">
+            <h2 class="section-title">Por que os oceanos são essenciais?</h2>
+            <p>Os oceanos cobrem mais de 70% da superfície da Terra e abrigam uma diversidade incrível de vida.
+                <br>Eles regulam o clima, fornecem oxigênio e sustentam milhões de pessoas em todo o mundo.
+            </p>
+            <br>
+            <p>Os oceanos desempenham um papel fundamental na regulação do clima global, absorvendo grandes quantidades de calor e dióxido de carbono da atmosfera.</p>
+            <br>
+            <p>Eles abrigam ecossistemas únicos, como recifes de coral, manguezais e pradarias marinhas, que são essenciais para a sobrevivência de muitas espécies e para a saúde do planeta como um todo.</p>
+        </section>
+
+        <section id="marine-life">
+            <h2 class="section-title">Um mundo vibrante de biodiversidade</h2>
+            <div class="carousel">
+                <img src="https://cdn.pixabay.com/photo/2013/11/01/11/13/dolphin-203875_1280.jpg" alt="Golfinho">
+                <img src="https://cdn.pixabay.com/photo/2017/05/31/18/38/sea-2361247_1280.jpg" alt="Mar">
+                <img src="https://cdn.pixabay.com/photo/2014/06/27/12/36/fish-378286_1280.jpg" alt="Peixe">
+                <img src="https://cdn.pixabay.com/photo/2016/11/19/14/56/fish-1839706_1280.jpg" alt="Peixes coloridos">
+            </div>
+        </section>
+
+        <section id="threats">
+            <h2 class="section-title">Protegendo o futuro dos nossos oceanos</h2>
+            <div class="infographics">
+                <div class="infographic">
+                    <h3>8 milhões de toneladas de plástico acabam nos oceanos todos os anos.</h3>
+                </div>
+                <div class="infographic">
+                    <h3>90% das grandes espécies marinhas estão sobre-exploradas.</h3>
+                </div>
+            </div>
+        </section>
+        <section id="acidification">
+            <h2 class="section-title">Acidificação dos Oceanos: Uma Ameaça Silenciosa</h2>
+            <div class="infographics">
+                <div class="infographic">
+                    <h3>Aumento do CO2 na água torna os oceanos mais ácidos, dissolvendo conchas e esqueletos de animais marinhos.</h3>
+                </div>
+                <div class="infographic">
+                    <h3>Recifes de coral, essenciais para a biodiversidade marinha, estão morrendo devido à acidificação.</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Avaliações -->
+        <section id="reviews" class="reviews-section">
+            <h2 class="section-title">deixe aqui seu feedback sobre nosso site!</h2>
+            <div class="reviews-container">
+                <!-- Formulário de Avaliação -->
+                <div class="review-form">
+                    <h3>Deixe sua avaliação</h3>
+                    <form id="reviewForm">
+                        <div class="form-group">
+                            <label for="name">Seu nome:</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="review">Sua mensagem sobre os oceanos:</label>
+                            <textarea id="review" required></textarea>
+                        </div>
+                        <button type="submit" class="cta-button">Enviar Avaliação</button>
+                    </form>
+                </div>
+                
+                <!-- Área de Visualização de Avaliações -->
+                <div class="reviews-display">
+                    <h3>Avaliações dos Visitantes</h3>
+                    <div class="reviews-list" id="reviewsList">
+                        <div class="no-reviews">Ainda não há avaliações. Seja o primeiro a compartilhar sua opinião!</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <!-- Conteúdo do footer aqui -->
+        </div>
+    </footer>
+
+    <script>
+        // Menu Mobile
+        function toggleNav() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Sistema de Avaliações
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carrega avaliações salvas ao iniciar
+            loadReviews();
+            
+            // Configura o formulário
+            document.getElementById('reviewForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value.trim();
+                const reviewText = document.getElementById('review').value.trim();
+                
+                if (name && reviewText) {
+                    addReview(name, reviewText);
+                    document.getElementById('reviewForm').reset();
+                    
+                    // Salva no localStorage
+                    saveReview(name, reviewText);
+                }
+            });
+        });
+
+        // Adiciona uma avaliação à lista
+        function addReview(name, text) {
+            const reviewsList = document.getElementById('reviewsList');
+            const now = new Date();
+            const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+            
+            // Remove a mensagem "sem avaliações" se existir
+            const noReviews = reviewsList.querySelector('.no-reviews');
+            if (noReviews) {
+                reviewsList.removeChild(noReviews);
+            }
+            
+            const reviewCard = document.createElement('div');
+            reviewCard.className = 'review-card';
+            reviewCard.innerHTML = `
+                <div class="review-author">${name}</div>
+                <div class="review-text">${text}</div>
+                <span class="review-date">${dateStr}</span>
+            `;
+            
+            // Adiciona no início para aparecer primeiro
+            reviewsList.insertBefore(reviewCard, reviewsList.firstChild);
+            
+            // Efeito visual
+            reviewCard.style.opacity = '0';
+            setTimeout(() => {
+                reviewCard.style.transition = 'opacity 0.5s ease';
+                reviewCard.style.opacity = '1';
+            }, 10);
+        }
+
+        // Salva avaliação no localStorage
+        function saveReview(name, text) {
+            let reviews = JSON.parse(localStorage.getItem('oceanReviews')) || [];
+            const now = new Date();
+            
+            reviews.unshift({
+                name: name,
+                text: text,
+                date: now.toISOString()
+            });
+            
+            // Mantém apenas as últimas 50 avaliações
+            if (reviews.length > 50) {
+                reviews = reviews.slice(0, 50);
+            }
+            
+            localStorage.setItem('oceanReviews', JSON.stringify(reviews));
+        }
+
+        // Carrega avaliações do localStorage
+        function loadReviews() {
+            const reviews = JSON.parse(localStorage.getItem('oceanReviews')) || [];
+            const reviewsList = document.getElementById('reviewsList');
+            
+            if (reviews.length === 0) {
+                return; // Mantém a mensagem "sem avaliações"
+            }
+            
+            // Remove a mensagem "sem avaliações"
+            const noReviews = reviewsList.querySelector('.no-reviews');
+            if (noReviews) {
+                reviewsList.removeChild(noReviews);
+            }
+            
+            // Adiciona cada avaliação
+            reviews.forEach(review => {
+                const date = new Date(review.date);
+                const dateStr = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'review-card';
+                reviewCard.innerHTML = `
+                    <div class="review-author">${review.name}</div>
+                    <div class="review-text">${review.text}</div>
+                    <span class="review-date">${dateStr}</span>
+                `;
+                
+                reviewsList.appendChild(reviewCard);
+            });
+        }
+    </script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>
