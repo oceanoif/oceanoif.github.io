@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Memória - Oceano</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: url('https://cdn.pixabay.com/photo/2020/08/17/13/24/sea-5495381_1280.jpg') no-repeat center center/cover;
+            position: relative;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-20px); }
+            100% { transform: translateX(0); }
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('https://www.transparenttextures.com/patterns/wave.png') repeat-x;
+            opacity: 0.3;
+            animation: wave 5s infinite linear;
+            z-index: 1;
+        }
+
+        .memory-game {
+            width: 90%;
+            max-width: 640px;
+            height: auto;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            perspective: 1000px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .memory-card {
+            width: calc(25% - 10px);
+            height: 150px;
+            margin: 5px;
+            position: relative;
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+            transform: scale(1);
+            transform-style: preserve-3d;
+            transition: transform .5s;
+            cursor: pointer;
+            background: #003366;
+            border-radius: 10px;
+        }
+
+        .memory-card:active {
+            transform: scale(0.97);
+            transition: transform .2s;
+        }
+
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+
+        .front-face,
+        .back-face {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            position: absolute;
+            border-radius: 10px;
+            background: #003366;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .front-face {
+            transform: rotateY(180deg);
+        }
+
+        .front-face img,
+        .back-face img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+
+        .next-phase-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            z-index: 3;
+            display: none;
+        }
+
+        .next-phase-container.visible {
+            display: flex;
+        }
+
+        .next-phase {
+            font-size: 24px;
+            color: #fff;
+            background: #0a9396;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .next-phase-text {
+            color: #fff;
+            font-size: 18px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .phase-title {
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            z-index: 3;
+        }
+
+        .info-text {
+            color: #fff;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 90%;
+            line-height: 1.5;
+        }
+
+        .continue-button {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #fff;
+            background: #0a9396;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .continue-button.visible {
+            display: block;
+        }
+
+        /* Novo botão para voltar à seleção de jogos */
+        .back-to-games {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #fff;
+            background: #0a9396;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 3;
+            text-decoration: none;
+        }
+
+        .back-to-games.visible {
+            display: block;
+        }
+
+        /* Ajustes para 6 cartas */
+        .memory-game.phase-1 .memory-card {
+            width: calc(33.333% - 10px);
+            height: 200px;
+        }
+
+        /* Ajustes para 10 cartas */
+        .memory-game.phase-2 .memory-card {
+            width: calc(25% - 10px);
+            height: 150px;
+        }
+
+        /* Ajustes para 14 cartas */
+        .memory-game.phase-3 .memory-card {
+            width: calc(20% - 10px);
+            height: 120px;
+        }
+
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .memory-card {
+                width: calc(33.333% - 10px);
+                height: 120px;
+            }
+
+            .memory-game.phase-1 .memory-card {
+                width: calc(50% - 10px);
+                height: 150px;
+            }
+
+            .memory-game.phase-2 .memory-card {
+                width: calc(33.333% - 10px);
+                height: 120px;
+            }
+
+            .memory-game.phase-3 .memory-card {
+                width: calc(25% - 10px);
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .memory-card {
+                width: calc(50% - 10px);
+                height: 80px;
+                margin: 5px;
+            }
+
+            .memory-game.phase-1 .memory-card {
+                width: calc(50% - 10px);
+                height: 100px;
+            }
+
+            .memory-game.phase-2 .memory-card {
+                width: calc(33.333% - 10px);
+                height: 80px;
+            }
+
+            .memory-game.phase-3 .memory-card {
+                width: calc(25% - 10px);
+                height: 70px;
+            }
+
+            .next-phase-container {
+                top: 10px;
+                right: 10px;
+                gap: 5px;
+            }
+
+            .next-phase {
+                font-size: 18px;
+                padding: 8px;
+            }
+
+            .next-phase-text {
+                font-size: 14px;
+            }
+
+            .phase-title {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+
+            .info-text {
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            .continue-button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            
+            .back-to-games {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phase-title" id="phaseTitle">Fase 1</div>
+    <div class="next-phase-container" id="nextPhaseContainer">
+        <div class="next-phase">➡️</div>
+        <div class="next-phase-text">Próxima Fase</div>
+    </div>
+    <div class="info-text" id="infoText"></div>
+    <button class="continue-button" id="continueButton">Continuar</button>
+    <a href="selecao_jogos.html" class="back-to-games" id="backToGames">Voltar à seleção de jogos</a>
+    <section class="memory-game phase-1" id="memoryGame">
+        <!-- As cartas serão inseridas dinamicamente via JavaScript -->
+    </section>
+    <div class="wave"></div>
+
+    <script>
+        const memoryGame = document.getElementById('memoryGame');
+        const nextPhaseContainer = document.getElementById('nextPhaseContainer');
+        const phaseTitle = document.getElementById('phaseTitle');
+        const infoText = document.getElementById('infoText');
+        const continueButton = document.getElementById('continueButton');
+        const backToGames = document.getElementById('backToGames');
+        let currentPhase = 1;
+        let cards = [];
+
+        const phases = [
+            { cards: 6 },  // Fase 1: 6 cartas (3 pares)
+            { cards: 10 }, // Fase 2: 10 cartas (5 pares)
+            { cards: 14 }  // Fase 3: 14 cartas (7 pares)
+        ];
+
+        const animalInfo = {
+            tartaruga: "As tartarugas marinhas estão sofrendo com o aumento da temperatura dos oceanos, que afeta a proporção de sexos dos filhotes, e com a perda de habitats de nidificação devido ao aumento do nível do mar.",
+            pinguim: "Os pinguins estão enfrentando a redução do gelo marinho, que é crucial para sua reprodução e alimentação, além de mudanças na disponibilidade de presas devido ao aquecimento das águas.",
+            tubarao: "Os tubarões estão sendo afetados pela acidificação dos oceanos e pela redução de habitats como recifes de coral, além de enfrentarem mudanças na distribuição de suas presas.",
+            golfinho: "Os golfinhos estão sofrendo com a poluição sonora submarina, que interfere em sua comunicação e navegação, e com a contaminação química das águas que afeta seu sistema imunológico.",
+            arraia: "As arraias estão sendo impactadas pela destruição de habitats costeiros e pela pesca acidental, além de sofrerem com as mudanças nas correntes oceânicas que afetam seus padrões migratórios.",
+            "agua-viva": "As águas-vivas estão se proliferando devido ao aquecimento global e à redução de predadores, causando desequilíbrios ecológicos e afetando a pesca e o turismo em várias regiões.",
+            foca: "As focas estão perdendo seus habitats de gelo essenciais para descanso e reprodução, além de enfrentarem dificuldades para encontrar alimentos devido às mudanças nas populações de peixes.",
+            polvo: "Os polvos estão sendo afetados pela acidificação dos oceanos, que prejudica seu desenvolvimento embrionário, e pela redução de habitats rochosos devido à sedimentação aumentada.",
+            "leao-marinho": "Os leões-marinhos estão sofrendo com o aquecimento das águas que reduz suas áreas de alimentação e com a escassez de peixes devido à sobrepesca e mudanças nas correntes oceânicas.",
+            peixes: "Muitas espécies de peixes estão mudando seus habitats devido ao aquecimento dos oceanos, afetando todo o ecossistema marinho e a pesca sustentável.",
+            orca: "As orcas estão sendo afetadas pela contaminação química dos oceanos que se acumula em sua gordura corporal e pela redução de suas presas devido às mudanças climáticas.",
+            "baleia-azul": "As baleias azuis, os maiores animais do planeta, estão enfrentando mudanças na distribuição de krill, seu principal alimento, devido ao aquecimento das águas polares.",
+            "cavalo-marinho": "Os cavalos-marinhos estão perdendo seus habitats de manguezais e recifes de coral devido ao aumento do nível do mar e à acidificação dos oceanos.",
+            baiacu: "Os baiacus estão sendo afetados pela destruição de recifes de coral e pela mudança na química da água, que altera seu comportamento e ciclo reprodutivo.",
+            camarao: "Os camarões estão sofrendo com a acidificação dos oceanos que dificulta a formação de suas conchas e com a perda de habitats costeiros devido à elevação do nível do mar."
+        };
+
+        const animalImages = {
+            phase1: [
+                { theme: 'tartaruga', src: 'https://cdn.pixabay.com/photo/2016/11/29/02/19/animal-1866808_1280.jpg' },
+                { theme: 'pinguim', src: 'https://cdn.pixabay.com/photo/2024/09/07/02/34/penguins-9028827_1280.jpg' },
+                { theme: 'tubarao', src: 'https://cdn.pixabay.com/photo/2021/03/24/19/07/shark-6121088_1280.jpg' }
+            ],
+            phase2: [
+                { theme: 'golfinho', src: 'https://cdn.pixabay.com/photo/2013/11/01/11/13/dolphin-203875_1280.jpg' },
+                { theme: 'arraia', src: 'https://cdn.pixabay.com/photo/2023/08/20/14/47/stingray-8202506_1280.jpg' },
+                { theme: 'agua-viva', src: 'https://cdn.pixabay.com/photo/2021/09/24/20/59/jellyfish-6653502_1280.jpg' },
+                { theme: 'foca', src: 'https://cdn.pixabay.com/photo/2013/03/14/10/48/fur-seal-93496_1280.jpg' },
+                { theme: 'polvo', src: 'https://cdn.pixabay.com/photo/2018/03/26/13/40/nature-3262715_1280.jpg' }
+            ],
+            phase3: [
+                { theme: 'leao-marinho', src: 'https://cdn.pixabay.com/photo/2016/09/05/15/40/sea-lion-1646863_1280.jpg' },
+                { theme: 'peixes', src: 'https://cdn.pixabay.com/photo/2016/09/09/08/58/underwater-1656503_1280.jpg' },
+                { theme: 'orca', src: 'https://cdn.pixabay.com/photo/2024/12/27/17/47/orca-9294583_1280.jpg' },
+                { theme: 'baleia-azul', src: 'https://cdn.pixabay.com/photo/2016/11/22/19/33/whale-1850235_1280.jpg' },
+                { theme: 'cavalo-marinho', src: 'https://cdn.pixabay.com/photo/2016/07/24/06/57/seahorse-1538016_1280.jpg' },
+                { theme: 'baiacu', src: 'https://cdn.pixabay.com/photo/2021/08/16/04/38/puffer-6549298_1280.jpg' },
+                { theme: 'camarao', src: 'https://cdn.pixabay.com/photo/2014/05/02/02/02/shrimp-335841_1280.jpg' }
+            ]
+        };
+
+        function createCards(phase) {
+            memoryGame.innerHTML = '';
+            const numCards = phases[phase - 1].cards;
+
+            // Seleciona as imagens apropriadas para cada fase
+            let cardData = [];
+            if (phase === 1) {
+                const selectedThemes = animalImages.phase1.slice(0, numCards / 2);
+                cardData = selectedThemes.concat(selectedThemes);
+            } else if (phase === 2) {
+                const selectedThemes = animalImages.phase2.slice(0, numCards / 2);
+                cardData = selectedThemes.concat(selectedThemes);
+            } else {
+                // Fase 3: usa apenas as imagens específicas da fase 3
+                const selectedThemes = animalImages.phase3.slice(0, numCards / 2);
+                cardData = selectedThemes.concat(selectedThemes);
+            }
+
+            cardData.sort(() => Math.random() - 0.5);
+
+            cardData.forEach(animal => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.theme = animal.theme;
+
+                const frontFace = document.createElement('img');
+                frontFace.classList.add('front-face');
+                frontFace.src = animal.src;
+                frontFace.alt = 'Face da Carta';
+
+                const backFace = document.createElement('img');
+                backFace.classList.add('back-face');
+                backFace.src = 'https://cdn.pixabay.com/photo/2016/10/08/18/35/help-1724292_1280.png';
+                backFace.alt = 'Verso da Carta';
+
+                card.appendChild(frontFace);
+                card.appendChild(backFace);
+                memoryGame.appendChild(card);
+            });
+
+            memoryGame.className = `memory-game phase-${phase}`;
+            phaseTitle.textContent = `Fase ${phase}`;
+
+            cards = document.querySelectorAll('.memory-card');
+            cards.forEach(card => card.addEventListener('click', flipCard));
+        }
+
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flip');
+
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            lockBoard = true;
+
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.theme === secondCard.dataset.theme;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+
+            // Exibir a frase sobre o animal acertado
+            const theme = firstCard.dataset.theme;
+            if (animalInfo[theme]) {
+                infoText.textContent = animalInfo[theme];
+                infoText.style.display = 'block';
+                continueButton.classList.add('visible');
+            }
+
+            checkPhaseCompletion();
+            resetBoard();
+        }
+
+        function unflipCards() {
+            setTimeout(() => {
+                firstCard.classList.remove('flip');
+                secondCard.classList.remove('flip');
+
+                resetBoard();
+            }, 1500);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        function checkPhaseCompletion() {
+            const flippedCards = document.querySelectorAll('.memory-card.flip');
+            if (flippedCards.length === phases[currentPhase - 1].cards) {
+                if (currentPhase < phases.length) {
+                    nextPhaseContainer.classList.add('visible');
+                } else {
+                    infoText.textContent = "Parabéns! Você completou todas as fases e aprendeu sobre como as mudanças climáticas estão afetando a vida marinha. Cada pequena ação conta para proteger nossos oceanos!";
+                    infoText.style.display = 'block';
+                    continueButton.classList.add('visible');
+                    backToGames.classList.add('visible');
+                }
+            }
+        }
+
+        nextPhaseContainer.addEventListener('click', () => {
+            currentPhase++;
+            nextPhaseContainer.classList.remove('visible');
+            createCards(currentPhase);
+        });
+
+        continueButton.addEventListener('click', () => {
+            infoText.style.display = 'none';
+            continueButton.classList.remove('visible');
+        });
+
+        // Iniciar o jogo com a primeira fase
+        createCards(currentPhase);
+    </script>
+</body>
+</html>
