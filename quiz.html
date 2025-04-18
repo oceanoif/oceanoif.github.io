@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Oceano</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-image: url('https://cdn.pixabay.com/photo/2017/02/09/15/10/sea-2052650_1280.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    body h2 {
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    main {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 350px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+    }
+
+    .spnQtd {
+      text-align: end;
+      color: #333;
+    }
+
+    .timer {
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #008CCC;
+    }
+
+    .question {
+      font-size: 1.1em;
+      font-weight: 500;
+      color: #333;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    button {
+      width: 100%;
+      text-align: start;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #008CCC;
+      color: white;
+      font-size: 1em;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #006699;
+    }
+
+    .finish {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .finish button {
+      text-align: center;
+    }
+
+    .score {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1em;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    .team-scores {
+      display: none;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      justify-content: space-between;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 8px;
+      border-radius: 5px;
+    }
+
+    .team-score {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border-radius: 5px;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .current-team {
+      background-color: rgba(0, 140, 204, 0.7);
+      transform: scale(1.05);
+      transition: all 0.3s;
+    }
+
+    .feedback {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5em;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      display: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      z-index: 10;
+    }
+
+    .correct {
+      color: #2ecc71;
+      background-color: rgba(46, 204, 113, 0.2);
+    }
+
+    .wrong {
+      color: #e74c3c;
+      background-color: rgba(231, 76, 60, 0.2);
+    }
+    
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      text-align: center;
+    }
+    
+    .start-screen p {
+      color: #333;
+      font-weight: 500;
+    }
+    
+    .mode-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+    
+    .mode-btn {
+      text-align: center;
+      padding: 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .solo-btn {
+      background-color: #008CCC;
+      color: white;
+    }
+    
+    .team-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    .mode-btn:hover {
+      opacity: 0.9;
+      transform: scale(1.02);
+    }
+    
+    .winner-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 15px;
+    }
+    
+    .winner-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .winner-team {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #4CAF50;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      margin: 10px 0;
+      text-align: center;
+      line-height: 1.3;
+    }
+    
+    .turn-indicator {
+      font-weight: bold;
+      color: #008CCC;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 1.1em;
+    }
+    
+    .start-quiz-btn {
+      text-align: center;
+      background-color: #FF5722;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    .start-quiz-btn:hover {
+      background-color: #E64A19;
+      transform: scale(1.05);
+    }
+    
+    .mode-selected {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      text-align: center;
+    }
+    
+    .mode-selected p {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      border-radius: 50%;
+      animation: fall 5s linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+    
+    .time-bonus {
+      color: #FFD700;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .base-points {
+      color: #2ecc71;
+      font-weight: bold;
+    }
+    
+    .help-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      gap: 10px;
+    }
+    
+    .help-btn {
+      padding: 8px 10px;
+      border-radius: 5px;
+      font-size: 0.85em;
+      background-color: #FF9800;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+    }
+    
+    .help-btn:hover {
+      background-color: #F57C00;
+    }
+    
+    .help-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .help-count {
+      font-size: 0.8em;
+      margin-left: 5px;
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+    
+    .eliminated {
+      opacity: 0.5;
+      pointer-events: none;
+      text-decoration: line-through;
+    }
+    
+    .hint-text {
+      font-size: 0.9em;
+      color: #FF9800;
+      font-style: italic;
+      margin-top: 10px;
+      text-align: center;
+      padding: 5px;
+      border-radius: 5px;
+      background-color: rgba(255, 152, 0, 0.1);
+    }
+
+    /* Estilos para o modo multiplayer */
+    .multiplayer-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .multiplayer-options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .room-code-input {
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100%;
+      text-align: center;
+      font-size: 1em;
+      margin-bottom: 5px;
+    }
+
+    .room-code-display {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #008CCC;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: rgba(0, 140, 204, 0.1);
+      border-radius: 5px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .waiting-message {
+      color: #333;
+      font-weight: 500;
+      margin: 10px 0;
+    }
+
+    .copy-btn {
+      background-color: #9C27B0;
+      color: white;
+      width: 100%;
+    }
+
+    .start-game-btn {
+      background-color: #4CAF50;
+      color: white;
+      width: 100%;
+      display: none;
+    }
+
+    .switch-mode-btn {
+      background-color: #607D8B;
+      color: white;
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-weight: 500;
+      font-size: 0.9em;
+      margin: 5px 0;
+    }
+
+    .multiplayer-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .multiplayer-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>QUIZ OCEANO</h2>
+  <div class="score">Pontuação: 0</div>
+  <div class="team-scores">
+    <div class="team-score" id="team1-score">Equipe 1: 0</div>
+    <div class="team-score" id="team2-score">Equipe 2: 0</div>
+  </div>
+  <main>
+    <div class="start-screen">
+      <p>Escolha o modo de jogo:</p>
+      <div class="mode-buttons">
+        <button class="mode-btn solo-btn" id="solo-btn">Jogar Sozinho</button>
+        <button class="mode-btn team-btn" id="team-btn">Jogar em Dupla</button>
+      </div>
+    </div>
+    
+    <div class="mode-selected" id="mode-selected">
+      <p id="mode-description"></p>
+      <button class="start-quiz-btn" id="start-quiz-btn">Começar Quiz</button>
+    </div>
+
+    <div class="multiplayer-screen" id="multiplayer-screen">
+      <div class="multiplayer-section" id="host-options">
+        <div class="multiplayer-title">Crie uma sala para jogar com um amigo:</div>
+        <button class="mode-btn" id="create-room-btn">Criar Sala</button>
+        <div class="room-code-display" id="room-code-display" style="display: none;"></div>
+        <p class="waiting-message" id="waiting-message" style="display: none;">Aguardando outro jogador...</p>
+        <button class="mode-btn copy-btn" id="copy-btn" style="display: none;">Copiar Código</button>
+        <button class="mode-btn switch-mode-btn" id="switch-to-join-btn">Entrar em uma Sala</button>
+      </div>
+      <div class="multiplayer-section" id="join-options" style="display: none;">
+        <div class="multiplayer-title">Digite o código da sala:</div>
+        <input type="text" class="room-code-input" id="room-code-input" placeholder="Digite o código de 4 dígitos">
+        <p class="error-message" id="error-message" style="display: none;"></p>
+        <button class="mode-btn" id="join-room-btn">Entrar na Sala</button>
+        <p class="waiting-message" id="join-waiting-message" style="display: none;">Conectando...</p>
+        <button class="mode-btn switch-mode-btn" id="switch-to-host-btn">Criar uma Sala</button>
+      </div>
+      <button class="mode-btn start-game-btn" id="start-game-btn">Iniciar Jogo</button>
+    </div>
+    
+    <div class="content" style="display: none;">
+      <div class="turn-indicator"></div>
+      <span class="spnQtd"></span>
+      <span class="timer"></span>
+      <span class="question"></span>
+      <div class="answers"></div>
+      <div class="help-buttons">
+        <button class="help-btn" id="eliminate-btn">Retirar 2 opções <span class="help-count" id="eliminate-count">3</span></button>
+        <button class="help-btn" id="hint-btn">Dica <span class="help-count" id="hint-count">3</span></button>
+      </div>
+      <div class="hint-text" id="hint-text"></div>
+    </div>
+    <div class="finish">
+      <span></span>
+      <button>Reiniciar</button>
+    </div>
+    <div class="winner-screen">
+      <div class="winner-title">🎉 Resultado Final 🎉</div>
+      <div class="winner-team" id="winner-team"></div>
+      <button class="mode-btn solo-btn" id="play-again-btn">Jogar Novamente</button>
+    </div>
+    <div class="feedback"></div>
+  </main>
+
+  <script>
+    // Elementos da DOM
+    const question = document.querySelector(".question");
+    const answers = document.querySelector(".answers");
+    const spnQtd = document.querySelector(".spnQtd");
+    const timerDisplay = document.querySelector(".timer");
+    const textFinish = document.querySelector(".finish span");
+    const content = document.querySelector(".content");
+    const startScreen = document.querySelector(".start-screen");
+    const modeSelected = document.querySelector("#mode-selected");
+    const modeDescription = document.querySelector("#mode-description");
+    const startQuizBtn = document.querySelector("#start-quiz-btn");
+    const contentFinish = document.querySelector(".finish");
+    const btnRestart = document.querySelector(".finish button");
+    const btnSolo = document.querySelector("#solo-btn");
+    const btnTeam = document.querySelector("#team-btn");
+    const scoreDisplay = document.querySelector(".score");
+    const teamScoresDisplay = document.querySelector(".team-scores");
+    const team1ScoreDisplay = document.querySelector("#team1-score");
+    const team2ScoreDisplay = document.querySelector("#team2-score");
+    const feedbackDisplay = document.querySelector(".feedback");
+    const turnIndicator = document.querySelector(".turn-indicator");
+    const winnerScreen = document.querySelector(".winner-screen");
+    const winnerTeamDisplay = document.querySelector("#winner-team");
+    const btnPlayAgain = document.querySelector("#play-again-btn");
+    const eliminateBtn = document.querySelector("#eliminate-btn");
+    const hintBtn = document.querySelector("#hint-btn");
+    const eliminateCount = document.querySelector("#eliminate-count");
+    const hintCount = document.querySelector("#hint-count");
+    const hintText = document.querySelector("#hint-text");
+    const multiplayerScreen = document.querySelector("#multiplayer-screen");
+    const hostOptions = document.querySelector("#host-options");
+    const joinOptions = document.querySelector("#join-options");
+    const createRoomBtn = document.querySelector("#create-room-btn");
+    const joinRoomBtn = document.querySelector("#join-room-btn");
+    const roomCodeInput = document.querySelector("#room-code-input");
+    const roomCodeDisplay = document.querySelector("#room-code-display");
+    const waitingMessage = document.querySelector("#waiting-message");
+    const joinWaitingMessage = document.querySelector("#join-waiting-message");
+    const copyBtn = document.querySelector("#copy-btn");
+    const startGameBtn = document.querySelector("#start-game-btn");
+    const switchToJoinBtn = document.querySelector("#switch-to-join-btn");
+    const switchToHostBtn = document.querySelector("#switch-to-host-btn");
+    const errorMessage = document.querySelector("#error-message");
+
+    // Variáveis do jogo
+    let currentIndex = 0;
+    let questionsCorrect = 0;
+    let score = 0;
+    let team1Score = 0;
+    let team2Score = 0;
+    let currentTeam = 1;
+    let gameMode = null;
+    let shuffledQuestions = [];
+    let timeLeft = 0;
+    let timer = null;
+    let startTime = 0;
+    let targetScore = 0;
+    let eliminateUses = 3;
+    let hintUses = 3;
+    let usedHelp = false;
+    let roomCode = '';
+    let isHost = false;
+    let opponentConnected = false;
+    let playerTeam = 1;
+
+    // Perguntas do quiz
+    const questions = [
+      {
+        question: "Qual é o maior animal do oceano?",
+        answers: [
+          { option: "Tubarão-baleia", correct: false },
+          { option: "Baleia-azul", correct: true },
+          { option: "Polvo-gigante", correct: false },
+          { option: "Tubarão-branco", correct: false },
+        ],
+        hint: "Este animal pode chegar a mais de 30 metros de comprimento."
+      },
+      {
+        question: "Qual destes peixes é conhecido por mudar de sexo?",
+        answers: [
+          { option: "Atum", correct: false },
+          { option: "Salmão", correct: false },
+          { option: "Peixe-palhaço", correct: true },
+          { option: "Tubarão-martelo", correct: false },
+        ],
+        hint: "Este peixe vive em simbiose com anêmonas-do-mar."
+      },
+      {
+        question: "Qual é o maior recife de coral do mundo?",
+        answers: [
+          { option: "Recife de Belize", correct: false },
+          { option: "Grande Barreira de Coral", correct: true },
+          { option: "Recife de Andros", correct: false },
+          { option: "Recife de Tubbataha", correct: false },
+        ],
+        hint: "Está localizado na Austrália e pode ser visto do espaço."
+      },
+      {
+        question: "Qual destes animais marinhos é um mamífero?",
+        answers: [
+          { option: "Tubarão", correct: false },
+          { option: "Golfinho", correct: true },
+          { option: "Polvo", correct: false },
+          { option: "Raia", correct: false },
+        ],
+        hint: "Este animal é muito inteligente e vive em grupos sociais complexos."
+      },
+      {
+        question: "O que é a zona afótica no oceano?",
+        answers: [
+          { option: "A zona onde há luz solar", correct: false },
+          { option: "A zona de transição entre maré alta e baixa", correct: false },
+          { option: "A zona sem luz solar", correct: true },
+          { option: "A zona de recifes de coral", correct: false },
+        ],
+        hint: "Esta zona começa onde a luz solar não consegue mais penetrar."
+      }
+    ];
+
+    // Função para embaralhar array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Eventos de UI
+    btnSolo.onclick = () => {
+      gameMode = 'solo';
+      startScreen.style.display = "none";
+      modeSelected.style.display = "flex";
+      modeDescription.textContent = "Modo Solo: Responda as perguntas sozinho contra o tempo! Ganhe até 20 pontos por resposta!";
+      startQuizBtn.style.display = "block";
+    };
+
+    btnTeam.onclick = () => {
+      gameMode = 'teams';
+      startScreen.style.display = "none";
+      multiplayerScreen.style.display = "flex";
+      hostOptions.style.display = "block";
+      joinOptions.style.display = "none";
+      errorMessage.style.display = "none";
+    };
+
+    createRoomBtn.onclick = () => {
+      isHost = true;
+      playerTeam = 1;
+      // Simulação de criação de sala
+      roomCode = Math.floor(1000 + Math.random() * 9000).toString();
+      roomCodeDisplay.textContent = `Código da sala: ${roomCode}`;
+      roomCodeDisplay.style.display = 'block';
+      waitingMessage.style.display = 'block';
+      copyBtn.style.display = 'block';
+      createRoomBtn.style.display = 'none';
+      errorMessage.style.display = 'none';
+      
+      // Simular conexão do oponente após 3 segundos (apenas para demonstração)
+      setTimeout(() => {
+        opponentConnected = true;
+        waitingMessage.textContent = 'Jogador conectado!';
+        startGameBtn.style.display = 'block';
+      }, 3000);
+    };
+
+    joinRoomBtn.onclick = () => {
+      const code = roomCodeInput.value.trim();
+      if (code && code.length === 4) {
+        joinWaitingMessage.style.display = 'block';
+        joinWaitingMessage.textContent = 'Conectando...';
+        errorMessage.style.display = 'none';
+        joinRoomBtn.disabled = true;
+        
+        // Simulação de conexão
+        setTimeout(() => {
+          roomCode = code;
+          playerTeam = 2;
+          joinWaitingMessage.textContent = 'Conectado! Aguardando início do jogo...';
+          joinRoomBtn.style.display = 'none';
+          roomCodeInput.style.display = 'none';
+          errorMessage.style.display = 'none';
+          
+          // Simular host iniciando o jogo após 3 segundos (apenas para demonstração)
+          setTimeout(() => {
+            startMultiplayerGame();
+          }, 3000);
+        }, 1000);
+      } else {
+        errorMessage.textContent = 'O código deve ter 4 dígitos';
+        errorMessage.style.display = 'block';
+      }
+    };
+
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(roomCode);
+      copyBtn.textContent = 'Copiado!';
+      setTimeout(() => {
+        copyBtn.textContent = 'Copiar Código';
+      }, 2000);
+    };
+
+    startGameBtn.onclick = () => {
+      if (opponentConnected || gameMode !== 'teams') {
+        startMultiplayerGame();
+      }
+    };
+
+    switchToJoinBtn.onclick = () => {
+      hostOptions.style.display = "none";
+      joinOptions.style.display = "block";
+      roomCodeInput.focus();
+    };
+
+    switchToHostBtn.onclick = () => {
+      joinOptions.style.display = "none";
+      hostOptions.style.display = "block";
+    };
+
+    startQuizBtn.onclick = () => {
+      modeSelected.style.display = "none";
+      startGame();
+    };
+
+    btnPlayAgain.onclick = resetGame;
+    btnRestart.onclick = resetGame;
+
+    eliminateBtn.onclick = () => {
+      if (eliminateUses <= 0) return;
+      
+      const answerButtons = document.querySelectorAll(".answer:not(.eliminated)");
+      const incorrectAnswers = Array.from(answerButtons).filter(btn => 
+        btn.getAttribute("data-correct") === "false"
+      );
+      
+      shuffleArray(incorrectAnswers);
+      const toEliminate = incorrectAnswers.slice(0, 2);
+      
+      toEliminate.forEach(btn => {
+        btn.classList.add("eliminated");
+      });
+      
+      eliminateUses--;
+      eliminateCount.textContent = eliminateUses;
+      eliminateBtn.disabled = eliminateUses <= 0;
+      usedHelp = true;
+    };
+
+    hintBtn.onclick = () => {
+      if (hintUses <= 0) return;
+      
+      const currentQuestion = shuffledQuestions[currentIndex];
+      hintText.textContent = currentQuestion.hint;
+      hintText.style.display = "block";
+      
+      hintUses--;
+      hintCount.textContent = hintUses;
+      hintBtn.disabled = hintUses <= 0;
+      usedHelp = true;
+    };
+
+    // Funções do jogo
+    function startMultiplayerGame() {
+      multiplayerScreen.style.display = "none";
+      startGame();
+    }
+
+    function startGame() {
+      shuffledQuestions = [...questions];
+      shuffleArray(shuffledQuestions);
+      
+      eliminateUses = 3;
+      hintUses = 3;
+      eliminateCount.textContent = eliminateUses;
+      hintCount.textContent = hintUses;
+      eliminateBtn.disabled = false;
+      hintBtn.disabled = false;
+      
+      content.style.display = "flex";
+      
+      if (gameMode === 'teams') {
+        targetScore = 100;
+        scoreDisplay.style.display = "none";
+        teamScoresDisplay.style.display = "flex";
+        updateTeamScores();
+        updateTurnIndicator();
+        
+        if (currentTeam !== playerTeam) {
+          document.querySelectorAll('.answer').forEach(btn => {
+            btn.disabled = true;
+          });
+          turnIndicator.textContent = `Vez da Equipe ${currentTeam} (oponente)`;
+        } else {
+          turnIndicator.textContent = `Sua vez (Equipe ${playerTeam})`;
+        }
+      } else {
+        targetScore = 10;
+        scoreDisplay.style.display = "block";
+        teamScoresDisplay.style.display = "none";
+      }
+      
+      loadQuestion();
+    }
+
+    function resetGame() {
+      currentIndex = 0;
+      questionsCorrect = 0;
+      score = 0;
+      team1Score = 0;
+      team2Score = 0;
+      currentTeam = 1;
+      scoreDisplay.textContent = "Pontuação: 0";
+      content.style.display = "none";
+      contentFinish.style.display = "none";
+      winnerScreen.style.display = "none";
+      feedbackDisplay.style.display = "none";
+      gameMode = null;
+      hintText.style.display = "none";
+      usedHelp = false;
+      roomCode = '';
+      isHost = false;
+      opponentConnected = false;
+      playerTeam = 1;
+      multiplayerScreen.style.display = "none";
+      hostOptions.style.display = "none";
+      joinOptions.style.display = "none";
+      roomCodeDisplay.style.display = "none";
+      waitingMessage.style.display = "none";
+      copyBtn.style.display = "none";
+      startGameBtn.style.display = "none";
+      joinWaitingMessage.style.display = "none";
+      errorMessage.style.display = "none";
+      createRoomBtn.style.display = "block";
+      joinRoomBtn.style.display = "block";
+      joinRoomBtn.disabled = false;
+      roomCodeInput.style.display = "block";
+      startScreen.style.display = "flex";
+    }
+
+    function startTimer() {
+      timeLeft = 20;
+      startTime = Date.now();
+      timerDisplay.textContent = `Tempo: ${timeLeft}s`;
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Tempo: ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          showFeedback("Tempo esgotado!", false);
+          setTimeout(() => {
+            nextQuestion({ target: { getAttribute: () => "false" } });
+          }, 1000);
+        }
+      }, 1000);
+    }
+
+    function calculatePoints() {
+      const endTime = Date.now();
+      const responseTime = (endTime - startTime) / 1000;
+      
+      let basePoints = 10;
+      if (usedHelp) basePoints = 5;
+      
+      const bonusMax = 10;
+      const bonusTimeThreshold = 10;
+      const bonus = responseTime <= bonusTimeThreshold 
+        ? Math.floor(bonusMax * (1 - (responseTime / bonusTimeThreshold)))
+        : 0;
+      
+      return basePoints + bonus;
+    }
+
+    function showFeedback(message, isCorrect, points = 0, bonus = 0) {
+      feedbackDisplay.textContent = message;
+      feedbackDisplay.className = 'feedback';
+      feedbackDisplay.classList.add(isCorrect ? 'correct' : 'wrong');
+      
+      if (isCorrect && points > 0) {
+        feedbackDisplay.innerHTML = `
+          ${message}
+          ${!usedHelp ? `<div class="base-points">+10 pontos</div>` : `<div class="base-points">+5 pontos (com ajuda)</div>`}
+          ${bonus > 0 ? `<div class="time-bonus">+${bonus} bônus</div>` : ''}
+          <div style="margin-top: 5px; font-size: 1.2em">Total: ${points} pontos</div>
+        `;
+      }
+      
+      feedbackDisplay.style.display = "block";
+      setTimeout(() => {
+        feedbackDisplay.style.display = "none";
+      }, 2000);
+    }
+
+    function updateTeamScores() {
+      team1ScoreDisplay.textContent = `Equipe 1: ${team1Score}`;
+      team2ScoreDisplay.textContent = `Equipe 2: ${team2Score}`;
+      
+      team1ScoreDisplay.classList.remove('current-team');
+      team2ScoreDisplay.classList.remove('current-team');
+      
+      if (currentTeam === 1) {
+        team1ScoreDisplay.classList.add('current-team');
+      } else {
+        team2ScoreDisplay.classList.add('current-team');
+      }
+    }
+
+    function updateTurnIndicator() {
+      if (gameMode === 'teams' && playerTeam) {
+        turnIndicator.textContent = currentTeam === playerTeam ? 
+          `Sua vez (Equipe ${playerTeam})` : 
+          `Vez da Equipe ${currentTeam} (oponente)`;
+      } else {
+        turnIndicator.textContent = `Vez da Equipe ${currentTeam}`;
+      }
+    }
+
+    function checkForWinner() {
+      if (team1Score >= targetScore) {
+        showWinner(`Equipe 1 venceu!<br>Pontuação: ${team1Score} 🎉`);
+        return true;
+      } else if (team2Score >= targetScore) {
+        showWinner(`Equipe 2 venceu!<br>Pontuação: ${team2Score} 🎉`);
+        return true;
+      }
+      return false;
+    }
+
+    function showWinner(message) {
+      content.style.display = "none";
+      winnerScreen.style.display = "flex";
+      winnerTeamDisplay.innerHTML = message;
+      createConfetti();
+    }
+
+    function createConfetti() {
+      const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        confetti.style.animationDelay = Math.random() + 's';
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => {
+          confetti.remove();
+        }, 5000);
+      }
+    }
+
+    function nextQuestion(e) {
+      clearInterval(timer);
+      hintText.style.display = "none";
+
+      const isCorrect = e.target.getAttribute("data-correct") === "true";
+      let pointsEarned = 0;
+      let bonus = 0;
+      
+      if (isCorrect) {
+        questionsCorrect++;
+        pointsEarned = calculatePoints();
+        bonus = pointsEarned - (usedHelp ? 5 : 10);
+        
+        if (gameMode === 'solo') {
+          score += pointsEarned;
+          scoreDisplay.textContent = `Pontuação: ${score}`;
+          
+          if (currentIndex === shuffledQuestions.length - 1) {
+            showWinner(`Parabéns, você fez: <br>Pontuação: ${score} 🎉`);
+            return;
+          }
+        } else {
+          if (currentTeam === 1) {
+            team1Score += pointsEarned;
+          } else {
+            team2Score += pointsEarned;
+          }
+          
+          updateTeamScores();
+          
+          if (checkForWinner()) {
+            return;
+          }
+        }
+        
+        showFeedback("Resposta correta!", true, pointsEarned, bonus);
+      } else {
+        showFeedback("Resposta errada!", false);
+      }
+
+      if (gameMode === 'teams') {
+        currentTeam = currentTeam === 1 ? 2 : 1;
+        updateTurnIndicator();
+        updateTeamScores();
+      }
+
+      usedHelp = false;
+      
+      if (currentIndex < shuffledQuestions.length - 1) {
+        currentIndex++;
+        
+        setTimeout(() => {
+          loadQuestion();
+        }, 2000);
+      } else {
+        if (gameMode === 'solo') {
+          showWinner(`Parabéns, você completou o quiz!<br>Sua pontuação: ${score} pontos`);
+        } else {
+          currentIndex = 0;
+          setTimeout(() => {
+            loadQuestion();
+          }, 2000);
+        }
+      }
+    }
+
+    function loadQuestion() {
+      spnQtd.innerHTML = `${currentIndex + 1}/${shuffledQuestions.length}`;
+      const item = shuffledQuestions[currentIndex];
+      answers.innerHTML = "";
+      question.innerHTML = item.question;
+      hintText.textContent = "";
+      hintText.style.display = "none";
+
+      item.answers.forEach((answer) => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+        <button class="answer" data-correct="${answer.correct}">
+          ${answer.option}
+        </button>`;
+        answers.appendChild(div);
+      });
+
+      document.querySelectorAll(".answer").forEach((item) => {
+        item.addEventListener("click", nextQuestion);
+        
+        if (gameMode === 'teams' && currentTeam !== playerTeam) {
+          item.disabled = true;
+        }
+      });
+
+      startTimer();
+    }
+  </script>
+</body>
+</html>
