@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letreco Oceano</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('https://cdn.pixabay.com/photo/2020/04/16/06/06/water-5049286_1280.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 20, 40, 0.85);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .title-container {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .letter-blue {
+            color: #4fc1e9;
+        }
+
+        .tile-container {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .tile-row {
+            margin-bottom: 0.5rem;
+            justify-content: center;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tile-column {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            height: 50px;
+            width: 50px;
+            border-radius: 8px;
+            font-size: 24px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 400px) {
+            .tile-column {
+                height: 40px;
+                width: 40px;
+                font-size: 20px;
+            }
+        }
+
+        .typing {
+            border: 2px solid #4fc1e9;
+            box-shadow: 0 0 10px rgba(79, 193, 233, 0.5);
+        }
+
+        .disabled {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .right {
+            background-color: #48cfad;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .wrong {
+            background-color: #ed5565;
+            color: #fff;
+        }
+
+        .displaced {
+            background-color: #ffaa00;
+            color: #fff;
+        }
+
+        .keyboard-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .keyboard-row-container {
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .keyboard-row-container.notAlphabetic {
+            width: 100%;
+        }
+
+        .keyboard-row-container:not(.notAlphabetic) button {
+            min-width: 8%;
+            height: 50px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
+            transition: all 0.2s ease;
+        }
+
+        .keyboard-row-container:not(.notAlphabetic) button:hover {
+            background-color: #fff;
+            transform: translateY(-2px);
+        }
+
+        #backspaceButton, #enterButton, #hintButton, #restartButton {
+            height: 50px;
+            padding: 0 1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 0.25rem;
+        }
+
+        #backspaceButton {
+            background-color: #ed5565;
+            color: white;
+        }
+
+        #enterButton {
+            background-color: #48cfad;
+            color: white;
+        }
+        
+        #hintButton {
+            background-color: #4fc1e9;
+            color: white;
+        }
+
+        #restartButton {
+            background-color: #ffaa00;
+            color: white;
+        }
+
+        #backspaceButton:hover, #enterButton:hover, #hintButton:hover, #restartButton:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .key-used.right {
+            background-color: #48cfad;
+            color: white;
+        }
+
+        .key-used.displaced {
+            background-color: #ffaa00;
+            color: white;
+        }
+
+        .key-used.wrong {
+            background-color: #656d78;
+            color: white;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background-color: #48cfad;
+            display: block;
+        }
+
+        .error {
+            background-color: #ed5565;
+            display: block;
+        }
+        
+        .hint {
+            background-color: #4fc1e9;
+            display: block;
+        }
+
+        .word-meaning {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .next-phase {
+            margin-top: 1rem;
+            padding: 10px 20px;
+            background-color: #ffaa00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        .back-to-games {
+            margin-top: 1rem;
+            padding: 10px 20px;
+            background-color: #4fc1e9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: none;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .action-buttons button {
+            flex: 1 1 auto;
+            min-width: 120px;
+            max-width: 200px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-buttons button {
+                width: 100%;
+                max-width: none;
+            }
+            
+            #backspaceButton, #enterButton, #hintButton, #restartButton {
+                padding: 0 0.5rem;
+                font-size: 14px;
+                margin: 0 0.1rem;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="title-container">
+            <h1>
+                <span class="letter-blue">L</span>
+                <span class="letter-blue">E</span>
+                <span class="letter-blue">T</span>
+                <span class="letter-blue">R</span>
+                <span class="letter-blue">E</span>
+                <span class="letter-blue">I</span>
+                <span class="letter-blue">R</span>
+                <span class="letter-blue">O</span>
+            </h1>
+            <p id="phaseDescription">Adivinhe a palavra marinha em 6 tentativas</p>    
+        </div>
+        <div class="tile-container"></div>
+        <div class="message"></div>
+        <div class="word-meaning" id="wordMeaning"></div>
+        <div class="action-buttons">
+            <button class="next-phase" id="nextPhase">Próxima Fase</button>
+            <button class="back-to-games" id="backToGames">Voltar à seleção de jogos</button>
+            <button id="restartButton">Reiniciar Letreco</button>
+        </div>
+        <div class="keyboard-container">
+            <div class="keyboard-row-container notAlphabetic" id="backspaceAndEnterRow"></div>
+            <div class="keyboard-row-container" id="keyboardFirstRow"></div>
+            <div class="keyboard-row-container" id="keyboardSecondRow"></div>
+            <div class="keyboard-row-container" id="keyboardThirdRow"></div>
+        </div>
+    </div>
+    <script>
+        // Elementos do DOM
+        const tiles = document.querySelector(".tile-container");
+        const backspaceAndEnterRow = document.querySelector("#backspaceAndEnterRow");
+        const keyboardFirstRow = document.querySelector("#keyboardFirstRow");
+        const keyboardSecondRow = document.querySelector("#keyboardSecondRow");
+        const keyboardThirdRow = document.querySelector("#keyboardThirdRow");
+        const messageEl = document.querySelector(".message");
+        const wordMeaningEl = document.querySelector("#wordMeaning");
+        const nextPhaseBtn = document.querySelector("#nextPhase");
+        const backToGamesBtn = document.querySelector("#backToGames");
+        const restartButton = document.querySelector("#restartButton");
+        const phaseDescription = document.querySelector("#phaseDescription");
+
+        // Layout brasileiro ABNT2
+        const keysFirstRow = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
+        const keysSecondRow = ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ç"];
+        const keysThirdRow = ["Z", "X", "C", "V", "B", "N", "M"];
+
+        // Palavras reais com 5 letras e dicas
+        const oceanWords5 = [
+            {word: "AREIA", hint: "Partículas que formam as praias", meaning: "AREIA: Partículas finas de rochas que cobrem as praias."},
+            {word: "MARES", hint: "Grandes massas de água salgada", meaning: "MARES: Grandes extensões de água salgada que cobrem a maior parte da Terra."},
+            {word: "PEIXE", hint: "Animal aquático com guelras", meaning: "PEIXE: Animal aquático que respira através de guelras e possui nadadeiras."},
+            {word: "PRAIA", hint: "Faixa de terra junto ao mar", meaning: "PRAIA: Faixa de terra junto ao mar, coberta por areia ou pedras."},
+            {word: "PESCA", hint: "Atividade de capturar animais aquáticos", meaning: "PESCA: Atividade de capturar peixes e outros animais aquáticos."}
+        ];
+
+        // Palavras reais com 7 letras e dicas
+        const oceanWords7 = [
+            {word: "BALEIAS", hint: "Maiores mamíferos marinhos", meaning: "BALEIAS: Grandes mamíferos marinhos que incluem os maiores animais do planeta."},
+            {word: "TUBARÃO", hint: "Predador dos mares", meaning: "TUBARÃO: Peixe predador com esqueleto cartilaginoso, temido por muitos."},
+            {word: "SEREIAS", hint: "Criaturas mitológicas metade peixe", meaning: "SEREIAS: Criaturas mitológicas metade mulher, metade peixe, do folclore marinho."},
+            {word: "FAROLES", hint: "Estruturas que orientam navios", meaning: "FAROLES: Torres com luzes fortes para orientar navios próximos à costa."},
+            {word: "ONDULAS", hint: "Movimento das ondas do mar", meaning: "ONDULAS: Movimento oscilatório da superfície da água do mar."}
+        ];
+
+        // Palavras reais com 4 letras e dicas
+        const oceanWords4 = [
+            {word: "ONDA", hint: "Movimento da superfície do mar", meaning: "ONDA: Movimento oscilatório da superfície da água causado pelo vento."},
+            {word: "AGUA", hint: "Elemento essencial para a vida marinha", meaning: "ÁGUA: Substância líquida essencial para toda a vida no planeta, cobre 71% da Terra."},
+            {word: "MARÉ", hint: "Variação do nível do mar", meaning: "MARÉ: Variação periódica do nível do mar causada pela atração gravitacional da Lua e do Sol."},
+            {word: "REDE", hint: "Usada para pescar", meaning: "REDE: Utensílio feito de fios entrelaçados usado para capturar peixes."}
+        ];
+
+        // Variáveis do jogo
+        let currentPhase = 1;
+        let letreco, letrecoMap, hint, meaning;
+        let rows, columns;
+        let currentRow = 0;
+        let currentColumn = 0;
+        let guesses = [];
+
+        // Remove acentos para comparação
+        function removeAccents(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
+        // Inicializa o jogo
+        function initGame(phase) {
+            currentPhase = phase;
+            
+            // Limpa o tabuleiro e teclado
+            tiles.innerHTML = '';
+            keyboardFirstRow.innerHTML = '';
+            keyboardSecondRow.innerHTML = '';
+            keyboardThirdRow.innerHTML = '';
+            backspaceAndEnterRow.innerHTML = '';
+            
+            // Configurações baseadas na fase
+            if (phase === 1) {
+                rows = 6;
+                columns = 5;
+                phaseDescription.textContent = "Adivinhe a palavra marinha (5 letras) em 6 tentativas";
+                const randomWord = oceanWords5[Math.floor(Math.random() * oceanWords5.length)];
+                letreco = randomWord.word.toUpperCase();
+                hint = randomWord.hint;
+                meaning = randomWord.meaning;
+            } else if (phase === 2) {
+                rows = 6;
+                columns = 7;
+                phaseDescription.textContent = "Adivinhe a palavra marinha (7 letras) em 6 tentativas";
+                const randomWord = oceanWords7[Math.floor(Math.random() * oceanWords7.length)];
+                letreco = randomWord.word.toUpperCase();
+                hint = randomWord.hint;
+                meaning = randomWord.meaning;
+            } else {
+                rows = 6;
+                columns = 4;
+                phaseDescription.textContent = "Adivinhe a palavra marinha (4 letras) em 6 tentativas";
+                const randomWord = oceanWords4[Math.floor(Math.random() * oceanWords4.length)];
+                letreco = randomWord.word.toUpperCase();
+                hint = randomWord.hint;
+                meaning = randomWord.meaning;
+            }
+            
+            // Cria mapa da palavra corretamente (considerando todas as ocorrências)
+            letrecoMap = {};
+            for (let index = 0; index < letreco.length; index++) {
+                const letter = letreco[index];
+                if (letrecoMap[letter] === undefined) {
+                    letrecoMap[letter] = [];
+                }
+                letrecoMap[letter].push(index);
+            }
+            
+            // Reseta variáveis
+            currentRow = 0;
+            currentColumn = 0;
+            guesses = [];
+            
+            // Cria o tabuleiro
+            for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+                guesses[rowIndex] = new Array(columns);
+                const tileRow = document.createElement("div");
+                tileRow.setAttribute("id", "row" + rowIndex);
+                tileRow.setAttribute("class", "tile-row");
+                for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
+                    const tileColumn = document.createElement("div");
+                    tileColumn.setAttribute("id", "row" + rowIndex + "column" + columnIndex);
+                    tileColumn.setAttribute(
+                        "class",
+                        rowIndex === 0 ? "tile-column typing" : "tile-column disabled"
+                    );
+                    tileRow.append(tileColumn);
+                    guesses[rowIndex][columnIndex] = "";
+                }
+                tiles.append(tileRow);
+            }
+            
+            // Cria o teclado
+            createKeyboardRow(keysFirstRow, keyboardFirstRow);
+            createKeyboardRow(keysSecondRow, keyboardSecondRow);
+            createKeyboardRow(keysThirdRow, keyboardThirdRow);
+            
+            // Cria botões especiais
+            createSpecialButtons();
+            
+            // Configura visibilidade dos botões
+            nextPhaseBtn.style.display = "none";
+            backToGamesBtn.style.display = "none";
+            restartButton.style.display = "none";
+            wordMeaningEl.style.display = "none";
+            
+            // Atualiza o manipulador de eventos do teclado
+            setupKeyboardHandlers();
+        }
+
+        function createSpecialButtons() {
+            // Botão de backspace
+            const backspaceButton = document.createElement("button");
+            backspaceButton.setAttribute("id", "backspaceButton");
+            backspaceButton.addEventListener("click", handleBackspace);
+            backspaceButton.textContent = "⌫";
+            backspaceAndEnterRow.append(backspaceButton);
+
+            // Botão de enter
+            const enterButton = document.createElement("button");
+            enterButton.setAttribute("id", "enterButton");
+            enterButton.addEventListener("click", checkGuess);
+            enterButton.textContent = "ENTER";
+            backspaceAndEnterRow.append(enterButton);
+            
+            // Botão de dica
+            const hintButton = document.createElement("button");
+            hintButton.setAttribute("id", "hintButton");
+            hintButton.addEventListener("click", showHint);
+            hintButton.textContent = "DICA";
+            backspaceAndEnterRow.append(hintButton);
+        }
+
+        function setupKeyboardHandlers() {
+            document.onkeydown = function (evt) {
+                evt = evt || window.event;
+                if (evt.key === "Enter") {
+                    checkGuess();
+                } else if (evt.key === "Backspace") {
+                    handleBackspace();
+                } else if (keysFirstRow.includes(evt.key.toUpperCase()) || 
+                           keysSecondRow.includes(evt.key.toUpperCase()) || 
+                           keysThirdRow.includes(evt.key.toUpperCase())) {
+                    handleKeyboardOnClick(evt.key.toUpperCase());
+                }
+            };
+        }
+
+        function showMessage(text, type) {
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = "block";
+            setTimeout(() => {
+                messageEl.style.display = "none";
+            }, 3000);
+        };
+
+        function showHint() {
+            showMessage(`Dica: ${hint}`, "hint");
+        };
+
+        function showWordMeaning() {
+            wordMeaningEl.textContent = meaning;
+            wordMeaningEl.style.display = "block";
+            backToGamesBtn.style.display = "block";
+            restartButton.style.display = "block";
+        }
+
+        function checkGuess() {
+            const guess = guesses[currentRow].join("");
+            if (guess.length !== columns) {
+                showMessage(`Palavra deve ter ${columns} letras!`, "error");
+                return;
+            }
+
+            const usedKeys = {};
+            const currentColumns = document.querySelectorAll(".typing");
+            
+            // Primeiro marcamos todas as letras corretas (ignorando acentos)
+            for (let index = 0; index < columns; index++) {
+                const letter = guess[index];
+                const correctLetter = letreco[index];
+                
+                if (removeAccents(letter) === removeAccents(correctLetter)) {
+                    currentColumns[index].classList.add("right");
+                    usedKeys[correctLetter] = (usedKeys[correctLetter] || 0) + 1;
+                    const keyButton = document.getElementById(correctLetter);
+                    if (keyButton) {
+                        keyButton.classList.add("key-used", "right");
+                    }
+                }
+            }
+            
+            // Depois marcamos as deslocadas e erradas (ignorando acentos)
+            for (let index = 0; index < columns; index++) {
+                const letter = guess[index];
+                const tile = currentColumns[index];
+                
+                // Se já está correta, pulamos
+                if (tile.classList.contains("right")) continue;
+                
+                // Verifica se a letra existe na palavra (ignorando acentos)
+                const normalizedLetter = removeAccents(letter);
+                const normalizedLetreco = removeAccents(letreco);
+                
+                if (normalizedLetreco.includes(normalizedLetter)) {
+                    // Conta quantas vezes a letra aparece na palavra e quantas já foram marcadas
+                    const totalInWord = (normalizedLetreco.match(new RegExp(normalizedLetter, "g")) || []).length;
+                    const alreadyUsed = usedKeys[letreco[index]] || 0;
+                    
+                    if (alreadyUsed < totalInWord) {
+                        tile.classList.add("displaced");
+                        usedKeys[letreco[index]] = (usedKeys[letreco[index]] || 0) + 1;
+                        const keyButton = document.getElementById(letreco[index]);
+                        if (keyButton && !keyButton.classList.contains("key-used")) {
+                            keyButton.classList.add("key-used", "displaced");
+                        }
+                    } else {
+                        tile.classList.add("wrong");
+                        const keyButton = document.getElementById(letter);
+                        if (keyButton && !keyButton.classList.contains("key-used")) {
+                            keyButton.classList.add("key-used", "wrong");
+                        }
+                    }
+                } else {
+                    tile.classList.add("wrong");
+                    const keyButton = document.getElementById(letter);
+                    if (keyButton && !keyButton.classList.contains("key-used")) {
+                        keyButton.classList.add("key-used", "wrong");
+                    }
+                }
+            }
+
+            // Verifica se acertou (ignorando acentos)
+            if (removeAccents(guess) === removeAccents(letreco)) {
+                showMessage("Parabéns! Você acertou a palavra marinha!", "success");
+                showWordMeaning();
+                if (currentPhase < 3) {
+                    nextPhaseBtn.style.display = "block";
+                }
+                disableGame();
+            } else {
+                if (currentRow === rows - 1) {
+                    showMessage(`Fim de jogo! A palavra era: ${letreco}`, "error");
+                    showWordMeaning();
+                    disableGame();
+                } else {
+                    moveToNextRow();
+                }
+            }
+        };
+
+        function disableGame() {
+            document.onkeydown = null;
+            const buttons = document.querySelectorAll("button");
+            buttons.forEach(button => {
+                if (!["nextPhase", "backToGames", "restartButton", "hintButton"].includes(button.id)) {
+                    button.disabled = true;
+                }
+            });
+        };
+
+        function enableGame() {
+            document.onkeydown = function (evt) {
+                evt = evt || window.event;
+                if (evt.key === "Enter") {
+                    checkGuess();
+                } else if (evt.key === "Backspace") {
+                    handleBackspace();
+                } else if (keysFirstRow.includes(evt.key.toUpperCase()) || 
+                           keysSecondRow.includes(evt.key.toUpperCase()) || 
+                           keysThirdRow.includes(evt.key.toUpperCase())) {
+                    handleKeyboardOnClick(evt.key.toUpperCase());
+                }
+            };
+            
+            const buttons = document.querySelectorAll("button");
+            buttons.forEach(button => {
+                button.disabled = false;
+            });
+        };
+
+        function moveToNextRow() {
+            const typingColumns = document.querySelectorAll(".typing");
+            for (let index = 0; index < typingColumns.length; index++) {
+                typingColumns[index].classList.remove("typing");
+                typingColumns[index].classList.add("disabled");
+            }
+            currentRow++;
+            currentColumn = 0;
+
+            const currentRowEl = document.querySelector("#row" + currentRow);
+            const currentColumns = currentRowEl.querySelectorAll(".tile-column");
+            for (let index = 0; index < currentColumns.length; index++) {
+                currentColumns[index].classList.remove("disabled");
+                currentColumns[index].classList.add("typing");
+            }
+        };
+
+        function handleKeyboardOnClick(key) {
+            if (currentColumn === columns) {
+                return;
+            }
+            const currentTile = document.querySelector(
+                "#row" + currentRow + "column" + currentColumn
+            );
+            currentTile.textContent = key;
+            guesses[currentRow][currentColumn] = key;
+            currentColumn++;
+        };
+
+        function createKeyboardRow(keys, keyboardRow) {
+            keys.forEach((key) => {
+                const buttonElement = document.createElement("button");
+                buttonElement.textContent = key;
+                buttonElement.setAttribute("id", key);
+                buttonElement.addEventListener("click", () => handleKeyboardOnClick(key));
+                keyboardRow.append(buttonElement);
+            });
+        };
+
+        function handleBackspace() {
+            if (currentColumn === 0) {
+                return;
+            }
+
+            currentColumn--;
+            guesses[currentRow][currentColumn] = "";
+            const tile = document.querySelector("#row" + currentRow + "column" + currentColumn);
+            tile.textContent = "";
+        };
+
+        // Evento para próxima fase
+        nextPhaseBtn.addEventListener("click", () => {
+            initGame(currentPhase + 1);
+        });
+
+        // Evento para voltar à seleção de jogos
+        backToGamesBtn.addEventListener("click", () => {
+            // Aqui você pode redirecionar para a página de seleção de jogos
+            // window.location.href = "selecao_jogos.html";
+        });
+
+        // Evento para reiniciar o jogo
+        restartButton.addEventListener("click", () => {
+            initGame(currentPhase);
+        });
+        
+        // Inicia o jogo
+        initGame(1);
+    </script>
+</body>
+</html>
