@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artes e Objetos</title>
+    <style>
+        /* Estilos gerais */
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #2196F3;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        /* Estilos do banner */
+        .banner-oceano {
+            background-image: url('https://cdn.pixabay.com/photo/2019/08/07/14/45/pollution-4390929_1280.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .banner-oceano::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5); /* Overlay escuro */
+        }
+
+        .conteudo-banner {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .banner-oceano h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .banner-oceano p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .botao-banner {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .botao-banner:hover {
+            background-color: #1976D2;
+        }
+
+        /* Estilos dos artigos */
+        article {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        article p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        iframe {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            border: none;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .download-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .download-link:hover {
+            background-color: #1976D2;
+        }
+
+        /* Estilos do footer */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #333;
+            color: white;
+            margin-top: 40px;
+        }
+
+        /* Media Queries para Responsividade */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .banner-oceano h2 {
+                font-size: 2rem;
+            }
+
+            .banner-oceano p {
+                font-size: 1rem;
+            }
+
+            article {
+                margin: 30px 10px;
+                padding: 15px;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .download-link {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .banner-oceano h2 {
+                font-size: 1.8rem;
+            }
+
+            .banner-oceano p {
+                font-size: 0.9rem;
+            }
+
+            article {
+                margin: 20px 5px;
+                padding: 10px;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            .download-link {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Banner -->
+    <section class="banner-oceano">
+        <div class="conteudo-banner">
+            <h2>Proteja os Oceanos!</h2>
+            <p>Você sabia que o plástico é uma das maiores ameaças aos oceanos? Mas a boa notícia é que você pode fazer a diferença! Aprenda aqui a transformar garrafas PET em artes e objetos incríveis e ajude a preservar o meio ambiente.</p>
+            <a href="#artigos" class="botao-banner">Comece Agora</a>
+        </div>
+    </section>
+
+    <!-- Artigos -->
+    <article id="artigos">
+        <p>Já pensou em construir um foguete com garrafas PET e ainda competir em uma competição nacional? Sim, é possível através da OBAFOG (Olimpíada Brasileira de Foguetes).</p>
+        <iframe src="https://www.youtube.com/embed/HzVmOrURO58?si=p0WqlCLhwZP_jiRF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <a href="https://www.ucs.br/site/midia/arquivos/tutorial-montagem-foguete.pdf" class="download-link" target="_blank">Visitar Site</a>
+    </article>
+
+    <article>
+        <p>Confira também este outro vídeo sobre como plantar em garrafas PET, uma ótima maneira de reutilizar materiais e contribuir para o meio ambiente.</p>
+        <iframe src="https://www.youtube.com/embed/umV3P25B0Nc?si=j8O-4pZbgKleF90p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <a href="https://jardinagem.casaefesta.com/como-plantar-em-garrafa-pet/" class="download-link" target="_blank">Visitar Site</a>
+    </article>
+
+    <article>
+        <p>Aprenda a fazer um carrinho de brinquedo com garrafa PET! Essa é uma ótima ideia para reciclar materiais e criar brinquedos divertidos e sustentáveis.</p>
+        <iframe src="https://www.youtube.com/embed/mhkn8xBYRuU?si=RaeXMm7TBUXwHkEH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </article>
+
+</body>
+</html>
