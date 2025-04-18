@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jornal do Oceano</title>
+  <style>
+    /* Reset básico */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+      color: #333;
+    }
+
+    /* Estilo do cabeçalho */
+    header {
+      position: relative;
+      text-align: center;
+      color: white;
+    }
+
+    header img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+
+    header h1 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Menu de navegação */
+    nav {
+      background-color: #023e8a;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    /* Menu responsivo (hamburger menu) */
+    .menu-icon {
+      display: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      nav a {
+        display: none;
+      }
+      .menu-icon {
+        display: block;
+      }
+      nav.responsive a {
+        display: block;
+        margin: 10px 0;
+      }
+    }
+
+    /* Estilo das notícias */
+    .noticia {
+      margin: 20px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .noticia:hover {
+      transform: scale(1.02);
+    }
+
+    .noticia h2 {
+      color: #0077b6;
+    }
+
+    .noticia img {
+      width: 50%; /* Reduzindo o tamanho das imagens para computadores */
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .noticia a {
+      color: #023e8a;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .noticia a:hover {
+      text-decoration: underline;
+    }
+
+    /* Rodapé */
+    footer {
+      background-color: #023e8a;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cabeçalho com a capa -->
+  <header>
+    <img src="https://cdn.pixabay.com/photo/2020/08/19/00/13/sea-5499649_1280.jpg" alt="Capa do Jornal do Oceano">
+    <h1>Jornal do Oceano</h1>
+  </header>
+
+  <!-- Menu de navegação -->
+  <nav id="menu">
+    <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+    <a href="vidamarinha.html">Vida Marinha</a>
+    <a href="conservacao.html">Conservação</a>
+    <a href="ciencia.html">Ciência</a>
+    <a href="turismo.html">Turismo</a>
+  </nav>
+
+  <!-- Seção: Vida Marinha -->
+  <section id="vida-marinha" class="noticia">
+    <h2>biodiversidade marinha</h2>
+    <img src="https://cdn.pixabay.com/photo/2016/11/19/14/56/fish-1839706_1280.jpg" alt="Vida Marinha">
+    <p>Descubra as maravilhas da vida marinha, desde os menores peixes até os maiores mamíferos do oceano. <a href="vidamarinha.html">Leia mais</a></p>
+  </section>
+
+  <!-- Seção: Conservação -->
+  <section id="conservacao" class="noticia">
+    <h2>Conservação</h2>
+    <img src="https://cdn.pixabay.com/photo/2014/08/26/13/28/sea-turtle-427942_1280.jpg" alt="Conservação">
+    <p>Saiba como a poluição e as mudanças climáticas estão afetando os oceanos e o que podemos fazer para ajudar. <a href="conservacao.html">Leia mais</a></p>
+  </section>
+
+  <!-- Seção: Ciência -->
+  <section id="ciencia" class="noticia">
+    <h2>Ciência</h2>
+    <img src="https://cdn.pixabay.com/photo/2018/11/20/16/44/laboratory-3827745_1280.jpg" alt="Ciência">
+    <p>As últimas descobertas científicas sobre o oceano e como a tecnologia está ajudando a explorar suas profundezas. <a href="ciencia.html">Leia mais</a></p>
+  </section>
+
+  <!-- Seção: Turismo -->
+  <section id="turismo" class="noticia">
+    <h2>Turismo</h2>
+    <img src="https://cdn.pixabay.com/photo/2017/01/20/00/30/maldives-1993704_1280.jpg" alt="Turismo">
+    <p>Conheça o turismo nos oceanos. <a href="turismo.html">Leia mais</a></p>
+  </section>
+
+  <script>
+    // Menu responsivo
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.classList.toggle("responsive");
+    }
+  </script>
+</body>
+</html>
