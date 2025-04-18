@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Salve o Oceano</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            touch-action: manipulation;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100%;
+            background-image: url('https://cdn.pixabay.com/photo/2016/11/21/12/36/ocean-1845110_1280.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        
+        .trash {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-image: url('https://cdn.pixabay.com/photo/2019/04/14/15/37/bottledwater-4127009_1280.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 2;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .dangerous {
+            background-image: url('https://cdn.pixabay.com/photo/2016/04/15/20/08/butterfly-fish-1331812_1280.png');
+        }
+        
+        .trash:hover {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+        }
+        
+        .trash-collected {
+            animation: collectAnimation 0.5s forwards;
+        }
+        
+        .dangerous-collected {
+            animation: dangerousCollect 0.5s forwards;
+        }
+        
+        @keyframes collectAnimation {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5) rotate(15deg); opacity: 0.8; }
+            100% { transform: scale(0.5) rotate(30deg); opacity: 0; }
+        }
+        
+        @keyframes dangerousCollect {
+            0% { transform: scale(1); opacity: 1; background-color: transparent; }
+            50% { transform: scale(1.3); opacity: 0.8; background-color: rgba(255, 0, 0, 0.5); }
+            100% { transform: scale(0.7) rotate(-30deg); opacity: 0; }
+        }
+        
+        #score-display {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: white;
+            font-size: clamp(16px, 4vw, 28px);
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            background-color: rgba(6, 57, 112, 0.8);
+            padding: 8px 20px;
+            border-radius: 15px;
+            z-index: 5;
+        }
+        
+        #lost-display {
+            position: absolute;
+            top: 70px;
+            left: 15px;
+            color: white;
+            font-size: clamp(16px, 4vw, 28px);
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            background-color: rgba(253, 59, 50, 0.8);
+            padding: 8px 20px;
+            border-radius: 15px;
+            z-index: 5;
+        }
+        
+        #lives-display {
+            position: absolute;
+            top: 125px;
+            left: 15px;
+            color: white;
+            font-size: clamp(16px, 4vw, 28px);
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            background-color: rgba(50, 205, 50, 0.8);
+            padding: 8px 20px;
+            border-radius: 15px;
+            z-index: 5;
+        }
+        
+        #game-over {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 10;
+        }
+        
+        #game-over-text {
+            font-size: clamp(40px, 10vw, 90px);
+            color: #FD3B32;
+            margin-bottom: 20px;
+            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.9);
+            animation: pulse 1.5s infinite;
+            text-align: center;
+            padding: 0 10px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        #restart-button, #start-button, #pause-button, #resume-button {
+            padding: 15px 30px;
+            background: linear-gradient(to bottom, #4CAF50, #45a049);
+            color: white;
+            font-size: clamp(20px, 5vw, 35px);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        #resume-button {
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        #restart-button:hover, #start-button:hover, #pause-button:hover, #resume-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to bottom, #45a049, #3d8b40);
+        }
+        
+        #restart-button:active, #start-button:active, #pause-button:active, #resume-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+        
+        .bubble {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        #click-feedback {
+            position: absolute;
+            color: gold;
+            font-size: clamp(16px, 4vw, 24px);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            animation: floatUp 1s forwards;
+            pointer-events: none;
+            z-index: 4;
+        }
+        
+        #negative-feedback {
+            position: absolute;
+            color: red;
+            font-size: clamp(16px, 4vw, 24px);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            animation: floatUp 1s forwards;
+            pointer-events: none;
+            z-index: 4;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
+        /* Mobile specific styles */
+        @media (hover: none) {
+            .trash {
+                cursor: default;
+            }
+            
+            .trash:hover {
+                transform: none;
+                filter: none;
+            }
+        }
+
+        /* Ajustes para celulares - tamanho maior */
+        @media (max-width: 768px) and (hover: none) {
+            .trash {
+                width: 130px !important;
+                height: 130px !important;
+            }
+        }
+
+        /* Ajuste extra para celulares muito pequenos */
+        @media (max-width: 480px) and (hover: none) {
+            .trash {
+                width: 110px !important;
+                height: 110px !important;
+            }
+        }
+        
+        /* Start screen */
+        #start-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 15;
+        }
+        
+        #start-title {
+            font-size: clamp(30px, 8vw, 70px);
+            color: #1E90FF;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        #start-instructions {
+            font-size: clamp(16px, 4vw, 24px);
+            margin-bottom: 40px;
+            text-align: center;
+            padding: 0 20px;
+            max-width: 80%;
+        }
+        
+        /* Pause button */
+        #pause-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 10px 20px;
+            font-size: clamp(16px, 4vw, 24px);
+            z-index: 5;
+            display: none;
+        }
+        
+        /* Pause overlay */
+        #pause-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 10;
+        }
+        
+        #pause-text {
+            font-size: clamp(30px, 8vw, 60px);
+            color: #FFD700;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="score-display">Pontuação: 0</div>
+        <div id="lost-display">Perdidos: 0</div>
+        <div id="lives-display">Vidas: 3</div>
+        <button id="pause-button">Pausar</button>
+        
+        <div id="start-screen">
+            <div id="start-title">Salve o Oceano</div>
+            <div id="start-instructions">Clique no lixo para coletá-lo antes que chegue ao fundo do oceano!<br>Cuidado com os peixes - eles reduzem suas vidas!</div>
+            <button id="start-button">Começar Jogo</button>
+        </div>
+        
+        <div id="pause-overlay">
+            <div id="pause-text">JOGO PAUSADO</div>
+            <button id="resume-button">Continuar</button>
+        </div>
+        
+        <div id="game-over">
+            <div id="game-over-text">FIM DE JOGO</div>
+            <button id="restart-button">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        const gameContainer = document.getElementById('game-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const lostDisplay = document.getElementById('lost-display');
+        const livesDisplay = document.getElementById('lives-display');
+        const gameOverScreen = document.getElementById('game-over');
+        const gameOverText = document.getElementById('game-over-text');
+        const restartButton = document.getElementById('restart-button');
+        const startScreen = document.getElementById('start-screen');
+        const startButton = document.getElementById('start-button');
+        const pauseButton = document.getElementById('pause-button');
+        const pauseOverlay = document.getElementById('pause-overlay');
+        const resumeButton = document.getElementById('resume-button');
+        
+        let scoreValue = 0;
+        let lostTrash = 0;
+        let lives = 3;
+        let baseSpeed = 2.5;
+        let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        // Ajuste: máximo de 5 objetos para mobile, 7 para desktop
+        let maxObjects = isTouchDevice ? 5 : 7;
+        let gameActive = false;
+        let gameLoopRunning = false;
+        let gamePaused = false;
+        
+        // Trash elements array
+        let trashElements = [];
+        
+        // Initialize game
+        function initGame() {
+            // Hide start screen
+            startScreen.style.display = 'none';
+            pauseButton.style.display = 'block';
+            
+            // Clear existing trash
+            trashElements.forEach(trash => {
+                if (trash.element && trash.element.parentNode) {
+                    trash.element.parentNode.removeChild(trash.element);
+                }
+            });
+            trashElements = [];
+            
+            // Create new trash - com intervalo maior para dispositivos móveis
+            if (isTouchDevice) {
+                let delay = 0;
+                for (let i = 0; i < maxObjects; i++) {
+                    setTimeout(() => {
+                        createRandomObject();
+                    }, delay);
+                    delay += 800; // Intervalo de 0.8s entre cada objeto
+                }
+            } else {
+                for (let i = 0; i < maxObjects; i++) {
+                    createRandomObject();
+                }
+            }
+            
+            // Reset counters
+            scoreValue = 0;
+            lostTrash = 0;
+            lives = 3;
+            // Velocidade base menor para dispositivos móveis
+            baseSpeed = isTouchDevice ? 2.0 : 2.5;
+            updateDisplays();
+            
+            // Hide game over screen and pause overlay
+            gameOverScreen.style.display = 'none';
+            pauseOverlay.style.display = 'none';
+            gameActive = true;
+            gamePaused = false;
+            
+            // Start game loop
+            if (!gameLoopRunning) {
+                gameLoopRunning = true;
+                gameLoop();
+            }
+            
+            // Create some bubbles for visual effect
+            createBubbles();
+        }
+        
+        // Create random object (trash or fish)
+        function createRandomObject() {
+            // 20% chance to create a dangerous fish (adjust as needed)
+            const isDangerous = Math.random() < 0.2;
+            createTrash(isDangerous);
+        }
+        
+        // Create bubbles for background effect
+        function createBubbles() {
+            for (let i = 0; i < 25; i++) {
+                setTimeout(() => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble';
+                    
+                    const size = Math.random() * 40 + 15;
+                    const posX = Math.random() * gameContainer.offsetWidth;
+                    const speed = Math.random() * 2 + 1;
+                    const opacity = Math.random() * 0.4 + 0.1;
+                    
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    bubble.style.left = `${posX}px`;
+                    bubble.style.bottom = `-${size}px`;
+                    bubble.style.opacity = opacity;
+                    
+                    gameContainer.appendChild(bubble);
+                    
+                    // Animate bubble
+                    let posY = -size;
+                    const bubbleInterval = setInterval(() => {
+                        if (gamePaused) return;
+                        
+                        posY -= speed;
+                        bubble.style.bottom = `${posY}px`;
+                        
+                        if (posY < -gameContainer.offsetHeight) {
+                            clearInterval(bubbleInterval);
+                            bubble.remove();
+                        }
+                    }, 50);
+                    
+                }, i * 400);
+            }
+        }
+        
+        // Create ripple effect
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            
+            ripple.style.left = `${x - 20}px`;
+            ripple.style.top = `${y - 20}px`;
+            ripple.style.width = '40px';
+            ripple.style.height = '40px';
+            
+            gameContainer.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        // Create click feedback text
+        function createClickFeedback(x, y, text, isPositive = true) {
+            const feedback = document.createElement('div');
+            feedback.id = isPositive ? 'click-feedback' : 'negative-feedback';
+            feedback.textContent = text;
+            feedback.style.left = `${x}px`;
+            feedback.style.top = `${y}px`;
+            
+            gameContainer.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 1000);
+        }
+        
+        // Handle trash/fish click/touch
+        function handleObjectInteraction(objectElement, isDangerous, clientX, clientY) {
+            if (gameActive && !gamePaused) {
+                // Get container position
+                const containerRect = gameContainer.getBoundingClientRect();
+                const x = clientX - containerRect.left;
+                const y = clientY - containerRect.top;
+                
+                // Create effects
+                createRipple(x, y);
+                
+                if (isDangerous) {
+                    // Dangerous fish clicked
+                    createClickFeedback(x, y, '-1 Vida', false);
+                    objectElement.classList.add('dangerous-collected');
+                    
+                    // Decrease lives
+                    lives--;
+                    updateDisplays();
+                    
+                    // Check if game over
+                    if (lives <= 0) {
+                        gameOver();
+                    }
+                } else {
+                    // Regular trash clicked
+                    createClickFeedback(x, y, '+1');
+                    objectElement.classList.add('trash-collected');
+                    
+                    // Increase score
+                    scoreValue++;
+                    updateDisplays();
+                    
+                    // Increase speed every 5 points (menos para celulares)
+                    if (scoreValue % 5 === 0) {
+                        baseSpeed += isTouchDevice ? 0.2 : 0.4;
+                        trashElements.forEach(trash => {
+                            trash.speed += isTouchDevice ? 0.2 : 0.4;
+                        });
+                    }
+                }
+                
+                // Remove from array and DOM after animation
+                setTimeout(() => {
+                    const index = trashElements.findIndex(t => t.element === objectElement);
+                    if (index !== -1) {
+                        trashElements.splice(index, 1);
+                    }
+                    objectElement.remove();
+                    
+                    // Create new object
+                    setTimeout(() => {
+                        createRandomObject();
+                    }, isTouchDevice ? 800 : 0); // Intervalo maior para celulares
+                }, 450);
+            }
+        }
+        
+        // Create a new trash or fish element
+        function createTrash(isDangerous = false) {
+            const trashElement = document.createElement('div');
+            trashElement.className = 'trash';
+            if (isDangerous) {
+                trashElement.classList.add('dangerous');
+            }
+            
+            // Tamanho base para computadores
+            let objectSize = Math.min(100, gameContainer.offsetWidth * 0.1, gameContainer.offsetHeight * 0.1);
+            
+            // Se for dispositivo móvel, aumenta mais o tamanho
+            if (isTouchDevice) {
+                if (window.innerWidth <= 480) {
+                    // Celulares muito pequenos
+                    objectSize = Math.min(110, gameContainer.offsetWidth * 0.22, gameContainer.offsetHeight * 0.22);
+                } else if (window.innerWidth <= 768) {
+                    // Celulares normais
+                    objectSize = Math.min(130, gameContainer.offsetWidth * 0.25, gameContainer.offsetHeight * 0.25);
+                }
+            }
+            
+            const x = Math.random() * (gameContainer.offsetWidth - objectSize);
+            const y = -Math.random() * 600 - 100;
+            const speed = baseSpeed + Math.random() * 0.8;
+            const rotation = Math.random() * 20 - 10;
+            
+            trashElement.style.width = `${objectSize}px`;
+            trashElement.style.height = `${objectSize}px`;
+            trashElement.style.left = `${x}px`;
+            trashElement.style.top = `${y}px`;
+            trashElement.style.transform = `rotate(${rotation}deg)`;
+            
+            gameContainer.appendChild(trashElement);
+            
+            trashElements.push({
+                element: trashElement,
+                x: x,
+                y: y,
+                speed: speed,
+                rotation: rotation,
+                rotationSpeed: Math.random() * 0.5 - 0.25,
+                isDangerous: isDangerous
+            });
+            
+            // Add interaction events based on device type
+            if (isTouchDevice) {
+                // Touch devices
+                trashElement.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0] || e.changedTouches[0];
+                    handleObjectInteraction(trashElement, isDangerous, touch.clientX, touch.clientY);
+                });
+            } else {
+                // Mouse devices
+                trashElement.addEventListener('mousedown', (e) => {
+                    e.stopPropagation();
+                    handleObjectInteraction(trashElement, isDangerous, e.clientX, e.clientY);
+                });
+            }
+        }
+        
+        // Update score, lost and lives displays
+        function updateDisplays() {
+            scoreDisplay.textContent = `Pontuação: ${scoreValue}`;
+            lostDisplay.textContent = `Perdidos: ${lostTrash}`;
+            livesDisplay.textContent = `Vidas: ${lives}`;
+        }
+        
+        // Game over
+        function gameOver() {
+            gameActive = false;
+            pauseButton.style.display = 'none';
+            gameOverScreen.style.display = 'flex';
+        }
+        
+        // Toggle pause
+        function togglePause() {
+            gamePaused = !gamePaused;
+            
+            if (gamePaused) {
+                pauseOverlay.style.display = 'flex';
+                pauseButton.textContent = 'Continuar';
+            } else {
+                pauseOverlay.style.display = 'none';
+                pauseButton.textContent = 'Pausar';
+                
+                // Continue game loop if needed
+                if (!gameLoopRunning && gameActive) {
+                    gameLoopRunning = true;
+                    gameLoop();
+                }
+            }
+        }
+        
+        // Game loop
+        function gameLoop() {
+            if (!gameActive || gamePaused) {
+                gameLoopRunning = false;
+                return;
+            }
+            
+            // Move trash
+            trashElements.forEach(trash => {
+                trash.y += trash.speed;
+                trash.rotation += trash.rotationSpeed;
+                trash.element.style.top = `${trash.y}px`;
+                trash.element.style.transform = `rotate(${trash.rotation}deg)`;
+                
+                // Check if trash reached bottom
+                if (trash.y >= gameContainer.offsetHeight) {
+                    // Remove this trash
+                    trash.element.remove();
+                    
+                    // Remove from array
+                    const index = trashElements.findIndex(t => t.element === trash.element);
+                    if (index !== -1) {
+                        trashElements.splice(index, 1);
+                    }
+                    
+                    // Create new trash com intervalo maior para celulares
+                    setTimeout(() => {
+                        createRandomObject();
+                    }, isTouchDevice ? 1000 : 0);
+                    
+                    // Increase lost counter (only for regular trash)
+                    if (!trash.isDangerous) {
+                        lostTrash++;
+                        updateDisplays();
+                        
+                        // Check if game over (based on lost trash)
+                        if (lostTrash >= 7) {
+                            gameOver();
+                        }
+                    }
+                }
+            });
+            
+            // Continue loop
+            if (gameLoopRunning) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        // Start button event
+        startButton.addEventListener('click', initGame);
+        
+        // Touch devices can also use the start button with touch
+        if (isTouchDevice) {
+            startButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                initGame();
+            });
+        }
+        
+        // Restart button event
+        restartButton.addEventListener('click', initGame);
+        
+        // Resume button event (same as restart)
+        resumeButton.addEventListener('click', togglePause);
+        
+        // Pause button event
+        pauseButton.addEventListener('click', togglePause);
+        
+        // Touch devices can also use the buttons with touch
+        if (isTouchDevice) {
+            restartButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                initGame();
+            });
+            
+            resumeButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                togglePause();
+            });
+            
+            pauseButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                togglePause();
+            });
+        }
+        
+        // Add keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && gameActive) {
+                togglePause();
+            }
+            
+            if ((e.key === ' ' || e.key === 'Enter') && !gameActive) {
+                if (startScreen.style.display !== 'none' || gameOverScreen.style.display === 'flex') {
+                    initGame();
+                }
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            trashElements.forEach(trash => {
+                let objectSize;
+                
+                if (isTouchDevice) {
+                    if (window.innerWidth <= 480) {
+                        objectSize = Math.min(110, gameContainer.offsetWidth * 0.22, gameContainer.offsetHeight * 0.22);
+                    } else if (window.innerWidth <= 768) {
+                        objectSize = Math.min(130, gameContainer.offsetWidth * 0.25, gameContainer.offsetHeight * 0.25);
+                    } else {
+                        objectSize = Math.min(100, gameContainer.offsetWidth * 0.1, gameContainer.offsetHeight * 0.1);
+                    }
+                } else {
+                    objectSize = Math.min(100, gameContainer.offsetWidth * 0.1, gameContainer.offsetHeight * 0.1);
+                }
+                
+                trash.element.style.width = `${objectSize}px`;
+                trash.element.style.height = `${objectSize}px`;
+                
+                // Keep trash within container bounds
+                trash.x = Math.min(trash.x, gameContainer.offsetWidth - objectSize);
+                trash.element.style.left = `${trash.x}px`;
+            });
+        });
+    </script>
+</body>
+</html>
