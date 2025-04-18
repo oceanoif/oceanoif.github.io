@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorando o Oceano - Artigos e Vídeos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap');
+        
+        :root {
+            --deep-blue: #00587a;
+            --ocean-blue: #008891;
+            --aqua-green: #00a8a8;
+            --light-aqua: #e7f6f6;
+            --sand: #f5f0e1;
+            --coral: #ff7e67;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-aqua);
+            color: #333;
+            background-image: url('https://www.transparenttextures.com/patterns/soft-wallpaper.png');
+            line-height: 1.6;
+        }
+
+        header {
+            background-image: linear-gradient(rgba(0, 88, 122, 0.8), rgba(0, 136, 145, 0.8)), 
+                              url('https://images.unsplash.com/photo-1498855926480-d98e83099315?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-bottom: 5px solid var(--aqua-green);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin: 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 10px auto;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Aumenta a navbar para tablets e desktops */
+        @media (min-width: 768px) {
+            header {
+                min-height: 300px;
+                padding: 40px 20px;
+            }
+            
+            header h1 {
+                font-size: 3.5rem;
+                padding: 20px;
+            }
+            
+            header p {
+                font-size: 1.3rem;
+                padding: 12px 25px;
+            }
+        }
+
+        section {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--deep-blue);
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--coral);
+            margin: 10px auto;
+        }
+
+        #artigos {
+            background-color: white;
+            margin: 30px auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            background-image: url('https://www.transparenttextures.com/patterns/rice-paper.png');
+        }
+
+        #artigos .artigo {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--aqua-green);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-image: url('https://www.transparenttextures.com/patterns/rice-paper-2.png');
+        }
+
+        #artigos .artigo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        #artigos .artigo h3 {
+            margin-top: 0;
+            color: var(--ocean-blue);
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            border-bottom: 2px dashed var(--aqua-green);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        #artigos .artigo p {
+            color: #555;
+        }
+
+        #videos {
+            background-color: var(--light-aqua);
+            padding: 40px 20px;
+            margin: 30px auto;
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+            background-image: url('https://www.transparenttextures.com/patterns/watercolor.png');
+        }
+
+        #video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        iframe {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+            padding: 5px;
+        }
+
+        iframe:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            background: linear-gradient(to right, var(--deep-blue), var(--ocean-blue));
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+            font-size: 0.9rem;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%2300587a" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%2300587a" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%2300587a"/></svg>');
+            background-size: cover;
+        }
+
+        /* Efeito de onda no rodapé */
+        .wave {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23e7f6f6" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%23e7f6f6" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23e7f6f6"/></svg>');
+            background-size: cover;
+        }
+
+        /* Bolhas flutuantes para efeito aquático */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 5s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Botão de voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--coral);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            background: var(--ocean-blue);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <h1>Explorando o Oceano</h1>
+        <p>Artigos e vídeos sobre a vida marinha e a conservação dos oceanos.</p>
+        <div id="bubbles-container"></div>
+    </header>
+
+    <section id="artigos">
+        <h2>Artigos</h2>
+        <div class="artigo">
+            <h3>A Importância dos Oceanos</h3>
+            <p>Os oceanos cobrem mais de 70% da superfície da Terra e são essenciais para a vida no planeta. Eles regulam o clima, fornecem alimento e são habitat para uma incrível diversidade de vida marinha. Além disso, os oceanos produzem mais de 50% do oxigênio que respiramos através do fitoplâncton.</p>
+        </div>
+        <div class="artigo">
+            <h3>Poluição nos Oceanos</h3>
+            <p>A poluição por plásticos é uma das maiores ameaças aos oceanos. Milhões de toneladas de plástico são despejadas nos oceanos todos os anos, afetando a vida marinha e os ecossistemas. Estima-se que até 2050, haverá mais plástico do que peixes nos oceanos se não mudarmos nossos hábitos de consumo e descarte.</p>
+        </div>
+        <div class="artigo">
+            <h3>Recifes de Coral</h3>
+            <p>Os recifes de coral, conhecidos como as "florestas tropicais do mar", abrigam cerca de 25% de toda a vida marinha, apesar de cobrirem menos de 1% do fundo do oceano. Eles estão ameaçados pelo branqueamento de corais, causado principalmente pelo aumento da temperatura dos oceanos devido às mudanças climáticas.</p>
+        </div>
+    </section>
+
+    <section id="videos">
+        <h2>Vídeos</h2>
+        <div id="video-container">
+            <!-- Os vídeos serão inseridos aqui via JavaScript -->
+        </div>
+    </section>
+
+    <div class="wave"></div>
+    
+    <a href="#" class="back-to-top" title="Voltar ao topo">↑</a>
+
+    <script>
+        // Array com os IDs dos vídeos do YouTube (substitua por vídeos reais sobre o oceano)
+        const videos = [
+            "Sn4T2zW9x2o", // Vídeo sobre vida marinha
+            "B4POS2x22W4", // Documentário sobre oceanos
+            "R2DU85qLfJQ"  // Conservação marinha
+        ];
+
+        const videoContainer = document.getElementById('video-container');
+        const bubblesContainer = document.getElementById('bubbles-container');
+        const backToTopButton = document.querySelector('.back-to-top');
+
+        // Função para criar iframes dos vídeos
+        function carregarVideos() {
+            videos.forEach(videoId => {
+                const videoWrapper = document.createElement('div');
+                videoWrapper.style.width = '100%';
+                videoWrapper.style.maxWidth = '560px';
+                
+                const iframe = document.createElement('iframe');
+                iframe.width = "100%";
+                iframe.height = "315";
+                iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                iframe.loading = "lazy";
+                
+                videoWrapper.appendChild(iframe);
+                videoContainer.appendChild(videoWrapper);
+            });
+        }
+
+        // Função para criar bolhas flutuantes
+        function criarBolhas() {
+            const numBolhas = 20;
+            
+            for (let i = 0; i < numBolhas; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Tamanho aleatório entre 5px e 30px
+                const size = Math.random() * 25 + 5;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Posição aleatória na tela
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.bottom = `-${size}px`;
+                
+                // Atraso e duração da animação aleatórios
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
+        // Função para mostrar/ocultar o botão de voltar ao topo
+        function toggleBackToTop() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', toggleBackToTop);
+        window.addEventListener('load', () => {
+            carregarVideos();
+            criarBolhas();
+            toggleBackToTop();
+        });
+    </script>
+</body>
+</html>
