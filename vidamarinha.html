@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notícias Científicas sobre os Oceanos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy-blue: #0a2463;
+            --marine-blue: #1e4d6b;
+            --teal: #3e92cc;
+            --seafoam: #d1f0f7;
+            --light-teal: #a7d9f5;
+            --dark-text: #051923;
+            --light-text: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--seafoam);
+            color: var(--dark-text);
+            line-height: 1.6;
+            padding-top: 70px; /* Adicionado para compensar a navbar fixa */
+        }
+
+
+        .logo {
+            color: var(--light-text);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        /* Conteúdo Principal */
+        .news-header {
+            background: linear-gradient(135deg, var(--navy-blue), var(--marine-blue));
+            color: var(--light-text);
+            text-align: center;
+            padding: 80px 20px;
+            margin-top: -70px; /* Compensa o padding-top do body */
+        }
+
+        .news-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .news-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .news-article {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 60, 100, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .article-header {
+            padding: 20px;
+        }
+
+        .article-date {
+            color: var(--teal);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--navy-blue);
+        }
+
+        .article-category {
+            display: inline-block;
+            background: var(--light-teal);
+            color: var(--navy-blue);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .article-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+        }
+
+        .article-content {
+            padding: 20px;
+        }
+
+        .article-content p {
+            margin-bottom: 15px;
+        }
+
+        .article-content h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--marine-blue);
+            margin: 20px 0 10px;
+            font-size: 1.4rem;
+        }
+
+        .article-content ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .news-header h1 {
+                font-size: 2rem;
+            }
+            
+            .article-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="news-header">
+        <h1>descobertas ciêntificas sobre a biodiversidade marinha</h1>
+        <p>descubre As últimas descobertas sobre a biodiversidade marinha</p>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="news-container">
+        <!-- Notícia 1 -->
+        <article class="news-article">
+            <div class="article-header">
+                <span class="article-date">15 MAR 2024</span>
+                <h2 class="article-title">Nível dos mares sobe mais que o previsto em 2024</h2>
+                <span class="article-category">Ciência</span>
+            </div>
+            
+            <img src="https://cdn.pixabay.com/photo/2017/05/14/22/34/nasa-2313267_1280.jpg" alt="Pesquisa oceânica" class="article-image">
+            
+            <div class="article-content">
+                <p>Dados atualizados divulgados pela NASA revelaram que o aumento do nível oceânico neste ano excedeu as projeções científicas. Esse fenômeno está diretamente vinculado ao aquecimento global das águas marinhas.</p>
+                
+                <h2>Dados alarmantes</h2>
+                <p>As análises demonstram que a elevação anual atingiu 0,59 cm, valor consideravelmente acima da estimativa inicial de 0,43 cm por ano.</p>
+                
+                <p>Os pesquisadores destacam que a absorção de calor pelos oceanos, responsável pela dilatação térmica da água, ocorre através de diversos mecanismos naturais.</p>
+                
+                <h2>Impactos a longo prazo</h2>
+                <p>As consequências desse aumento acelerado incluem:</p>
+                <ul>
+                    <li>Maior erosão costeira</li>
+                    <li>Inundações em áreas litorâneas</li>
+                    <li>Salinização de aquíferos</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- Notícia 2 -->
+        <article class="news-article">
+            <div class="article-header">
+                <span class="article-date">10 MAR 2024</span>
+                <h2 class="article-title">Aquecimento oceânico terá efeitos milenares</h2>
+                <span class="article-category">Clima</span>
+            </div>
+            
+            <img src="https://cdn.pixabay.com/photo/2020/03/30/16/40/un-4984799_1280.jpg" alt="Mudanças climáticas" class="article-image">
+            
+            <div class="article-content">
+                <p>Relatório internacional da ONU alerta que as alterações nos oceanos causadas pelas mudanças climáticas podem se tornar permanentes.</p>
+                
+                <h2>Temperaturas recordes</h2>
+                <p>As médias anuais de temperatura registraram 1,55°C acima dos níveis pré-Revolução Industrial, superando em 0,1°C o recorde anterior.</p>
+                
+                <h2>Mudanças permanentes</h2>
+                <p>Os cientistas alertam para os seguintes impactos:</p>
+                <ul>
+                    <li>Alteração nas correntes oceânicas</li>
+                    <li>Perda de biodiversidade marinha</li>
+                    <li>Eventos climáticos extremos</li>
+                </ul>
+            </div>
+        </article>
+    </main>
+</body>
+</html>
