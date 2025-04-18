@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>peixe vs Lixos</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0a246a;
+            font-family: Arial, sans-serif;
+            touch-action: manipulation;
+        }
+        
+        #gameCanvas {
+            display: block;
+            background-color: #0a246a;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+        
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            z-index: 10;
+        }
+        
+        #lives {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            z-index: 5;
+        }
+        
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            z-index: 5;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        #touchIndicator {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: none;
+            pointer-events: none;
+            z-index: 5;
+            transform: translate(-50%, -50%);
+        }
+        
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        
+        #startScreen h1 {
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        #pauseButton {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            z-index: 5;
+            background-color: #4CAF50;
+        }
+        
+        #pauseButton:hover {
+            background-color: #45a049;
+        }
+        
+        #pauseScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 15;
+            color: white;
+        }
+        
+        /* Controles para mobile - LAYOUT PERFEITAMENTE SIMÉTRICO */
+        #mobileControls {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            display: none;
+            justify-content: center;
+            z-index: 5;
+        }
+        
+        .arrow-btn {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            font-size: 30px;
+            color: white;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        
+        #upBtn {
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        #leftBtn {
+            bottom: 50px;
+            right: 50%;
+            margin-right: 60px; /* 60px do centro para a esquerda */
+        }
+        
+        #rightBtn {
+            bottom: 50px;
+            left: 50%;
+            margin-left: 60px; /* 60px do centro para a direita */
+        }
+        
+        #downBtn {
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>peixe vs Lixos</h1>
+        <button id="startButton">Começar Game</button>
+    </div>
+    
+    <button id="pauseButton">Pausar</button>
+    <div id="lives">Vidas: 3</div>
+    <div id="score">Tempo: 0s</div>
+    <div id="touchIndicator"></div>
+    <canvas id="gameCanvas"></canvas>
+    
+    <!-- Controles para mobile -->
+    <div id="mobileControls">
+        <div id="upBtn" class="arrow-btn">↑</div>
+        <div id="leftBtn" class="arrow-btn">←</div>
+        <div id="downBtn" class="arrow-btn">↓</div>
+        <div id="rightBtn" class="arrow-btn">→</div>
+    </div>
+    
+    <div id="pauseScreen">
+        <h1>Jogo Pausado</h1>
+        <button id="resumeButton">Continuar</button>
+        <button onclick="resetGame()">Voltar ao Menu</button>
+    </div>
+    
+    <div id="gameOver">
+        <h1>Game Over</h1>
+        <p id="finalScore">Seu tempo: 0s</p>
+        <button onclick="resetGame()">Jogar Novamente</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const livesDisplay = document.getElementById('lives');
+        const scoreDisplay = document.getElementById('score');
+        const gameOverDiv = document.getElementById('gameOver');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const touchIndicator = document.getElementById('touchIndicator');
+        const startScreen = document.getElementById('startScreen');
+        const startButton = document.getElementById('startButton');
+        const pauseButton = document.getElementById('pauseButton');
+        const pauseScreen = document.getElementById('pauseScreen');
+        const resumeButton = document.getElementById('resumeButton');
+        const mobileControls = document.getElementById('mobileControls');
+        const upBtn = document.getElementById('upBtn');
+        const downBtn = document.getElementById('downBtn');
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+
+        // Configurações do jogo
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let lives = 3;
+        let gameTime = 0;
+        let gameRunning = false;
+        let gamePaused = false;
+        let gameStartTime = Date.now();
+        let lastFrameTime = Date.now();
+        let isMobile = false;
+        let pausedTime = 0;
+        let timeWhenPaused = 0;
+        
+        // Estado dos botões de controle
+        const mobileKeys = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        };
+        
+        // Carregar imagem do lixo
+        const trashImg = new Image();
+        trashImg.src = 'https://cdn.pixabay.com/photo/2019/04/14/15/37/bottledwater-4127009_1280.png';
+        let trashImgLoaded = false;
+        trashImg.onload = function() {
+            trashImgLoaded = true;
+        };
+        
+        function checkIfMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        isMobile = checkIfMobile();
+        
+        if (isMobile) {
+            mobileControls.style.display = 'flex';
+            
+            // Eventos para os botões de controle
+            upBtn.addEventListener('touchstart', () => mobileKeys.up = true);
+            upBtn.addEventListener('touchend', () => mobileKeys.up = false);
+            
+            downBtn.addEventListener('touchstart', () => mobileKeys.down = true);
+            downBtn.addEventListener('touchend', () => mobileKeys.down = false);
+            
+            leftBtn.addEventListener('touchstart', () => mobileKeys.left = true);
+            leftBtn.addEventListener('touchend', () => mobileKeys.left = false);
+            
+            rightBtn.addEventListener('touchstart', () => mobileKeys.right = true);
+            rightBtn.addEventListener('touchend', () => mobileKeys.right = false);
+        }
+        
+        // Tubarão
+        const shark = {
+            x: 100,
+            y: canvas.height / 2,
+            size: 30,
+            speed: 5,
+            color: '#808080',
+            targetX: 100,
+            targetY: canvas.height / 2,
+            moving: false
+        };
+        
+        // Lixos
+        let trash = [];
+        
+        // Controles para desktop
+        let keys = {
+            ArrowUp: false,
+            ArrowDown: false,
+            ArrowLeft: false,
+            ArrowRight: false
+        };
+        
+        if (!isMobile) {
+            window.addEventListener('keydown', (e) => {
+                if (keys.hasOwnProperty(e.key)) {
+                    keys[e.key] = true;
+                }
+            });
+            
+            window.addEventListener('keyup', (e) => {
+                if (keys.hasOwnProperty(e.key)) {
+                    keys[e.key] = false;
+                }
+            });
+        }
+        
+        function drawShark() {
+            // Corpo do tubarão
+            ctx.fillStyle = shark.color;
+            ctx.beginPath();
+            ctx.moveTo(shark.x + shark.size * 1.5, shark.y);
+            ctx.lineTo(shark.x, shark.y - shark.size / 2);
+            ctx.lineTo(shark.x, shark.y + shark.size / 2);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Cauda
+            ctx.beginPath();
+            ctx.moveTo(shark.x, shark.y - shark.size / 3);
+            ctx.lineTo(shark.x - shark.size * 0.8, shark.y);
+            ctx.lineTo(shark.x, shark.y + shark.size / 3);
+            ctx.closePath();
+            ctx.fill();
+            
+            drawSharkEye();
+        }
+        
+        function drawSharkEye() {
+            const eyeX = shark.x + shark.size * 0.8;
+            const eyeY = shark.y - shark.size / 4;
+            const eyeRadius = shark.size / 8;
+            
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(eyeX, eyeY, eyeRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            let lookX = eyeX + eyeRadius/2;
+            let lookY = eyeY;
+            
+            if (trash.length > 0) {
+                let closestTrash = trash[0];
+                let minDistance = Infinity;
+                
+                for (const item of trash) {
+                    const distance = Math.sqrt(
+                        Math.pow(item.x - shark.x, 2) + 
+                        Math.pow(item.y - shark.y, 2)
+                    );
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestTrash = item;
+                    }
+                }
+                
+                const angle = Math.atan2(
+                    closestTrash.y - shark.y, 
+                    closestTrash.x - shark.x
+                );
+                
+                lookX = eyeX + Math.cos(angle) * eyeRadius/2;
+                lookY = eyeY + Math.sin(angle) * eyeRadius/2;
+            }
+            
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(lookX, lookY, eyeRadius/2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        function createTrash() {
+            if (!gamePaused && Math.random() < 0.02) {
+                const size = 30 + Math.random() * 30; // Entre 30 e 60
+                const speedMultiplier = 1 + Math.min(gameTime / 30, 3);
+                const speed = (2 + Math.random() * 3) * speedMultiplier;
+                
+                trash.push({
+                    x: canvas.width,
+                    y: Math.random() * canvas.height,
+                    width: size,
+                    height: size * 1.5, // Mantém a proporção da garrafa
+                    speed: speed
+                });
+            }
+        }
+        
+        function drawTrash() {
+            trash.forEach((item, index) => {
+                if (trashImgLoaded) {
+                    // Desenha a imagem do lixo
+                    ctx.drawImage(trashImg, item.x, item.y, item.width, item.height);
+                } else {
+                    // Fallback: desenha um retângulo se a imagem não carregou
+                    ctx.fillStyle = '#2E8B57';
+                    ctx.roundRect(item.x, item.y, item.width, item.height, 5);
+                    ctx.fill();
+                }
+                
+                if (!gamePaused) {
+                    item.x -= item.speed;
+                }
+                
+                if (item.x + item.width < 0) {
+                    trash.splice(index, 1);
+                }
+                
+                if (!gamePaused &&
+                    shark.x + shark.size > item.x &&
+                    shark.x < item.x + item.width &&
+                    shark.y + shark.size / 2 > item.y &&
+                    shark.y - shark.size / 2 < item.y + item.height
+                ) {
+                    trash.splice(index, 1);
+                    lives--;
+                    livesDisplay.textContent = `Vidas: ${lives}`;
+                    
+                    if (lives <= 0) {
+                        gameOver();
+                    }
+                }
+            });
+        }
+        
+        function gameOver() {
+            gameRunning = false;
+            finalScoreDisplay.textContent = `Seu tempo: ${Math.floor(gameTime)}s`;
+            gameOverDiv.style.display = 'block';
+        }
+        
+        function startGame() {
+            startScreen.style.display = 'none';
+            lives = 3;
+            gameTime = 0;
+            trash = [];
+            shark.x = 100;
+            shark.y = canvas.height / 2;
+            shark.targetX = 100;
+            shark.targetY = canvas.height / 2;
+            gameRunning = true;
+            gamePaused = false;
+            gameStartTime = Date.now();
+            lastFrameTime = Date.now();
+            livesDisplay.textContent = `Vidas: ${lives}`;
+            scoreDisplay.textContent = `Tempo: ${Math.floor(gameTime)}s`;
+            gameOverDiv.style.display = 'none';
+            pauseScreen.style.display = 'none';
+            gameLoop();
+        }
+        
+        function resetGame() {
+            startScreen.style.display = 'flex';
+            gameRunning = false;
+            gamePaused = false;
+            pauseScreen.style.display = 'none';
+        }
+        
+        function togglePause() {
+            if (!gameRunning) return;
+            
+            gamePaused = !gamePaused;
+            
+            if (gamePaused) {
+                timeWhenPaused = Date.now();
+                pauseScreen.style.display = 'flex';
+            } else {
+                pausedTime += Date.now() - timeWhenPaused;
+                pauseScreen.style.display = 'none';
+            }
+        }
+        
+        function moveShark() {
+            if (gamePaused) return;
+            
+            if (isMobile) {
+                // Controles móveis
+                if (mobileKeys.up && shark.y - shark.size / 2 > 0) {
+                    shark.y -= shark.speed;
+                }
+                if (mobileKeys.down && shark.y + shark.size / 2 < canvas.height) {
+                    shark.y += shark.speed;
+                }
+                if (mobileKeys.left && shark.x > 0) {
+                    shark.x -= shark.speed;
+                }
+                if (mobileKeys.right && shark.x + shark.size * 1.5 < canvas.width) {
+                    shark.x += shark.speed;
+                }
+            } else {
+                // Controles de teclado
+                if (keys.ArrowUp && shark.y - shark.size / 2 > 0) {
+                    shark.y -= shark.speed;
+                }
+                if (keys.ArrowDown && shark.y + shark.size / 2 < canvas.height) {
+                    shark.y += shark.speed;
+                }
+                if (keys.ArrowLeft && shark.x > 0) {
+                    shark.x -= shark.speed;
+                }
+                if (keys.ArrowRight && shark.x + shark.size * 1.5 < canvas.width) {
+                    shark.x += shark.speed;
+                }
+            }
+        }
+        
+        function gameLoop() {
+            if (!gameRunning || gamePaused) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+            
+            const now = Date.now();
+            gameTime = (now - gameStartTime - pausedTime) / 1000;
+            scoreDisplay.textContent = `Tempo: ${Math.floor(gameTime)}s`;
+            lastFrameTime = now;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            moveShark();
+            createTrash();
+            drawTrash();
+            drawShark();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Polyfill para roundRect caso o navegador não suporte
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.beginPath();
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            };
+        }
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            shark.y = Math.min(shark.y, canvas.height - shark.size / 2);
+            shark.targetY = Math.min(shark.targetY, canvas.height - shark.size / 2);
+        });
+        
+        // Adiciona o evento de clique no botão de início
+        startButton.addEventListener('click', startGame);
+        
+        // Adiciona o evento de clique no botão de pausa
+        pauseButton.addEventListener('click', togglePause);
+        
+        // Adiciona o evento de clique no botão de continuar
+        resumeButton.addEventListener('click', togglePause);
+    </script>
+</body>
+</html>
