@@ -314,8 +314,7 @@
                 <span class="letter-blue">T</span>
                 <span class="letter-blue">R</span>
                 <span class="letter-blue">E</span>
-                <span class="letter-blue">I</span>
-                <span class="letter-blue">R</span>
+                <span class="letter-blue">c</span>
                 <span class="letter-blue">O</span>
             </h1>
             <p id="phaseDescription">Adivinhe a palavra marinha em 6 tentativas</p>    
@@ -710,18 +709,14 @@
             initGame(currentPhase + 1);
         });
 
-        // Evento para voltar à seleção de jogos
+        
         backToGamesBtn.addEventListener("click", () => {
-            // Aqui você pode redirecionar para a página de seleção de jogos
-            // window.location.href = "selecao_jogos.html";
         });
 
-        // Evento para reiniciar o jogo
         restartButton.addEventListener("click", () => {
             initGame(currentPhase);
         });
         
-        // Inicia o jogo
         initGame(1);
     </script>
 </body>
