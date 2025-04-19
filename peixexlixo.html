@@ -183,6 +183,20 @@
             left: 50%;
             transform: translateX(-50%);
         }
+        
+        /* Efeito de impacto */
+        #impactEffect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 0, 0, 0.3);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 8;
+        }
     </style>
 </head>
 <body>
@@ -195,6 +209,7 @@
     <div id="lives">Vidas: 3</div>
     <div id="score">Tempo: 0s</div>
     <div id="touchIndicator"></div>
+    <div id="impactEffect"></div>
     <canvas id="gameCanvas"></canvas>
     
     <!-- Controles para mobile -->
@@ -208,13 +223,13 @@
     <div id="pauseScreen">
         <h1>Jogo Pausado</h1>
         <button id="resumeButton">Continuar</button>
-        <button onclick="resetGame()">Voltar ao Menu</button>
+        <button id="menuButton">Voltar ao Menu</button>
     </div>
     
     <div id="gameOver">
         <h1>Game Over</h1>
         <p id="finalScore">Seu tempo: 0s</p>
-        <button onclick="resetGame()">Jogar Novamente</button>
+        <button id="restartButton">Jogar Novamente</button>
     </div>
 
     <script>
@@ -225,11 +240,14 @@
         const gameOverDiv = document.getElementById('gameOver');
         const finalScoreDisplay = document.getElementById('finalScore');
         const touchIndicator = document.getElementById('touchIndicator');
+        const impactEffect = document.getElementById('impactEffect');
         const startScreen = document.getElementById('startScreen');
         const startButton = document.getElementById('startButton');
         const pauseButton = document.getElementById('pauseButton');
         const pauseScreen = document.getElementById('pauseScreen');
         const resumeButton = document.getElementById('resumeButton');
+        const menuButton = document.getElementById('menuButton');
+        const restartButton = document.getElementById('restartButton');
         const mobileControls = document.getElementById('mobileControls');
         const upBtn = document.getElementById('upBtn');
         const downBtn = document.getElementById('downBtn');
@@ -289,20 +307,25 @@
             rightBtn.addEventListener('touchend', () => mobileKeys.right = false);
         }
         
-        // Tubarão
+        // Peixe (Modificado do original)
         const shark = {
             x: 100,
             y: canvas.height / 2,
             size: 30,
             speed: 5,
-            color: '#808080',
+            color: '#FF6B00', // Cor principal do peixe (laranja)
             targetX: 100,
             targetY: canvas.height / 2,
-            moving: false
+            moving: false,
+            tailAngle: 0,
+            tailDirection: 1,
+            bubbleTimer: 0,
+            bubbles: []
         };
         
         // Lixos
         let trash = [];
+        let trashSpeedMultiplier = 1; // Variável para controlar a velocidade dos lixos
         
         // Controles para desktop
         let keys = {
@@ -326,39 +349,133 @@
             });
         }
         
-        function drawShark() {
-            // Corpo do tubarão
-            ctx.fillStyle = shark.color;
-            ctx.beginPath();
-            ctx.moveTo(shark.x + shark.size * 1.5, shark.y);
-            ctx.lineTo(shark.x, shark.y - shark.size / 2);
-            ctx.lineTo(shark.x, shark.y + shark.size / 2);
-            ctx.closePath();
-            ctx.fill();
-            
-            // Cauda
-            ctx.beginPath();
-            ctx.moveTo(shark.x, shark.y - shark.size / 3);
-            ctx.lineTo(shark.x - shark.size * 0.8, shark.y);
-            ctx.lineTo(shark.x, shark.y + shark.size / 3);
-            ctx.closePath();
-            ctx.fill();
-            
-            drawSharkEye();
+        // Função para mostrar efeito de impacto
+        function showImpactEffect() {
+            impactEffect.style.opacity = 1;
+            setTimeout(() => {
+                impactEffect.style.opacity = 0;
+            }, 300);
         }
         
-        function drawSharkEye() {
-            const eyeX = shark.x + shark.size * 0.8;
-            const eyeY = shark.y - shark.size / 4;
-            const eyeRadius = shark.size / 8;
+        // Função para desenhar o peixe aprimorado
+        function drawShark() {
+            const isMoving = keys.ArrowUp || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight ||
+                            mobileKeys.up || mobileKeys.down || mobileKeys.left || mobileKeys.right;
             
-            ctx.fillStyle = 'white';
+            // Animação da cauda
+            if (isMoving && !gamePaused) {
+                shark.tailAngle += 0.2 * shark.tailDirection;
+                if (Math.abs(shark.tailAngle) > 0.5) {
+                    shark.tailDirection *= -1;
+                }
+            }
+            
+            // Borbulhas ocasionais (para efeito)
+            shark.bubbleTimer += 1;
+            if (shark.bubbleTimer > 60 && Math.random() > 0.95) {
+                shark.bubbles.push({
+                    x: shark.x - shark.size * 0.5,
+                    y: shark.y - shark.size * 0.2,
+                    radius: 2 + Math.random() * 3,
+                    speed: 1 + Math.random(),
+                    opacity: 0.8
+                });
+                shark.bubbleTimer = 0;
+            }
+            
+            // Desenhar borbulhas
+            shark.bubbles.forEach((bubble, index) => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${bubble.opacity})`;
+                ctx.beginPath();
+                ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                if (!gamePaused) {
+                    bubble.x -= bubble.speed;
+                    bubble.y -= bubble.speed/2;
+                    bubble.opacity -= 0.01;
+                    
+                    if (bubble.opacity <= 0) {
+                        shark.bubbles.splice(index, 1);
+                    }
+                }
+            });
+            
+            // Salvar o contexto antes de transformar
+            ctx.save();
+            
+            // Corpo do peixe (base oval)
+            ctx.fillStyle = shark.color;
             ctx.beginPath();
-            ctx.arc(eyeX, eyeY, eyeRadius, 0, Math.PI * 2);
+            ctx.ellipse(shark.x, shark.y, shark.size * 1.2, shark.size * 0.7, 0, 0, Math.PI * 2);
             ctx.fill();
             
-            let lookX = eyeX + eyeRadius/2;
-            let lookY = eyeY;
+            // Cabeça/focinho do peixe (mais arredondado na frente)
+            ctx.fillStyle = "#FF8C40"; // Laranja mais claro
+            ctx.beginPath();
+            ctx.ellipse(shark.x + shark.size * 0.8, shark.y, shark.size * 0.5, shark.size * 0.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Lábios/boca
+            ctx.fillStyle = "#E05800"; // Laranja mais escuro
+            ctx.beginPath();
+            ctx.ellipse(shark.x + shark.size * 1.1, shark.y + shark.size * 0.1, shark.size * 0.2, shark.size * 0.15, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Cauda (com animação)
+            ctx.fillStyle = "#FF8C40"; // Laranja mais claro
+            ctx.save();
+            ctx.translate(shark.x - shark.size * 0.9, shark.y);
+            ctx.rotate(shark.tailAngle);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-shark.size * 0.8, -shark.size * 0.6);
+            ctx.lineTo(-shark.size * 0.6, 0);
+            ctx.lineTo(-shark.size * 0.8, shark.size * 0.6);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+            
+            // Barbatana dorsal
+            ctx.fillStyle = "#E05800"; // Laranja mais escuro
+            ctx.beginPath();
+            ctx.moveTo(shark.x, shark.y - shark.size * 0.5);
+            ctx.lineTo(shark.x - shark.size * 0.3, shark.y - shark.size * 1);
+            ctx.lineTo(shark.x + shark.size * 0.3, shark.y - shark.size * 0.5);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Barbatana peitoral
+            ctx.fillStyle = "#FF8C40"; // Laranja mais claro
+            ctx.beginPath();
+            ctx.moveTo(shark.x, shark.y + shark.size * 0.3);
+            ctx.lineTo(shark.x - shark.size * 0.5, shark.y + shark.size * 0.8);
+            ctx.lineTo(shark.x + shark.size * 0.3, shark.y + shark.size * 0.3);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Padrão de escamas (pontos mais escuros)
+            ctx.fillStyle = "#E05800"; // Laranja mais escuro
+            for (let i = 0; i < 8; i++) {
+                const scaleX = shark.x + (Math.random() - 0.8) * shark.size;
+                const scaleY = shark.y + (Math.random() - 0.5) * shark.size * 0.5;
+                const scaleSize = 2 + Math.random() * 3;
+                
+                ctx.beginPath();
+                ctx.arc(scaleX, scaleY, scaleSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Olho principal
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(shark.x + shark.size * 0.8, shark.y - shark.size * 0.2, shark.size * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Pupila do olho (com movimento para "olhar" para o lixo mais próximo)
+            let lookX = shark.x + shark.size * 0.8;
+            let lookY = shark.y - shark.size * 0.2;
+            const eyeRadius = shark.size * 0.15;
             
             if (trash.length > 0) {
                 let closestTrash = trash[0];
@@ -380,21 +497,46 @@
                     closestTrash.x - shark.x
                 );
                 
-                lookX = eyeX + Math.cos(angle) * eyeRadius/2;
-                lookY = eyeY + Math.sin(angle) * eyeRadius/2;
+                lookX = shark.x + shark.size * 0.8 + Math.cos(angle) * eyeRadius * 0.5;
+                lookY = shark.y - shark.size * 0.2 + Math.sin(angle) * eyeRadius * 0.5;
             }
             
-            ctx.fillStyle = 'black';
+            ctx.fillStyle = '#000033'; // Azul escuro para a pupila
             ctx.beginPath();
-            ctx.arc(lookX, lookY, eyeRadius/2, 0, Math.PI * 2);
+            ctx.arc(lookX, lookY, eyeRadius * 0.6, 0, Math.PI * 2);
             ctx.fill();
+            
+            // Brilho no olho
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(lookX - eyeRadius * 0.2, lookY - eyeRadius * 0.2, eyeRadius * 0.25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Destaque de luz no corpo do peixe
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.ellipse(shark.x, shark.y - shark.size * 0.3, shark.size * 0.8, shark.size * 0.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Guelras (três linhas curvas)
+            ctx.strokeStyle = '#E05800'; // Laranja mais escuro
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.arc(shark.x + shark.size * 0.3, shark.y, shark.size * 0.3, 
+                      Math.PI * 0.3, Math.PI * 0.7, false);
+                ctx.stroke();
+                ctx.translate(shark.size * 0.12, 0);
+            }
+            
+            // Restaurar o contexto
+            ctx.restore();
         }
         
         function createTrash() {
             if (!gamePaused && Math.random() < 0.02) {
                 const size = 30 + Math.random() * 30; // Entre 30 e 60
-                const speedMultiplier = 1 + Math.min(gameTime / 30, 3);
-                const speed = (2 + Math.random() * 3) * speedMultiplier;
+                const speed = (2 + Math.random() * 3) * trashSpeedMultiplier;
                 
                 trash.push({
                     x: canvas.width,
@@ -435,6 +577,7 @@
                     trash.splice(index, 1);
                     lives--;
                     livesDisplay.textContent = `Vidas: ${lives}`;
+                    showImpactEffect(); // Mostra o efeito de impacto
                     
                     if (lives <= 0) {
                         gameOver();
@@ -454,14 +597,17 @@
             lives = 3;
             gameTime = 0;
             trash = [];
+            trashSpeedMultiplier = 1; // Reseta a velocidade dos lixos
             shark.x = 100;
             shark.y = canvas.height / 2;
             shark.targetX = 100;
             shark.targetY = canvas.height / 2;
+            shark.bubbles = [];
             gameRunning = true;
             gamePaused = false;
             gameStartTime = Date.now();
             lastFrameTime = Date.now();
+            pausedTime = 0;
             livesDisplay.textContent = `Vidas: ${lives}`;
             scoreDisplay.textContent = `Tempo: ${Math.floor(gameTime)}s`;
             gameOverDiv.style.display = 'none';
@@ -470,10 +616,8 @@
         }
         
         function resetGame() {
-            startScreen.style.display = 'flex';
-            gameRunning = false;
-            gamePaused = false;
-            pauseScreen.style.display = 'none';
+            // Recarrega a página para reiniciar completamente o jogo
+            location.reload();
         }
         
         function togglePause() {
@@ -524,6 +668,38 @@
             }
         }
         
+        // Adicionar um efeito de fundo de água com bolhas
+        let backgroundBubbles = [];
+        
+        function createBackgroundBubbles() {
+            if (!gamePaused && Math.random() < 0.02) {
+                backgroundBubbles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height,
+                    radius: 2 + Math.random() * 5,
+                    speed: 1 + Math.random() * 2,
+                    opacity: 0.3 + Math.random() * 0.4
+                });
+            }
+        }
+        
+        function drawBackgroundBubbles() {
+            backgroundBubbles.forEach((bubble, index) => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${bubble.opacity})`;
+                ctx.beginPath();
+                ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                if (!gamePaused) {
+                    bubble.y -= bubble.speed;
+                    
+                    if (bubble.y + bubble.radius < 0) {
+                        backgroundBubbles.splice(index, 1);
+                    }
+                }
+            });
+        }
+        
         function gameLoop() {
             if (!gameRunning || gamePaused) {
                 requestAnimationFrame(gameLoop);
@@ -533,9 +709,16 @@
             const now = Date.now();
             gameTime = (now - gameStartTime - pausedTime) / 1000;
             scoreDisplay.textContent = `Tempo: ${Math.floor(gameTime)}s`;
+            
+            // Aumenta gradualmente a velocidade dos lixos com o tempo
+            trashSpeedMultiplier = 1 + Math.min(gameTime / 30, 3);
+            
             lastFrameTime = now;
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            createBackgroundBubbles();
+            drawBackgroundBubbles();
             
             moveShark();
             createTrash();
@@ -576,6 +759,12 @@
         
         // Adiciona o evento de clique no botão de continuar
         resumeButton.addEventListener('click', togglePause);
+        
+        // Adiciona o evento de clique no botão de menu
+        menuButton.addEventListener('click', resetGame);
+        
+        // Adiciona o evento de clique no botão de reiniciar
+        restartButton.addEventListener('click', resetGame);
     </script>
 </body>
 </html>
