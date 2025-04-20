@@ -1,9 +1,618 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Página em Desenvolvimento</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking Oceânico - Melhores Jogadores</title>
+    <style>
+        :root {
+            --deep-blue: #005f73;
+            --ocean-blue: #0a9396;
+            --light-blue: #94d2bd;
+            --sand: #e9d8a6;
+            --sunset: #ee9b00;
+            --coral: #ca6702;
+            --deep-red: #bb3e03;
+            --wave: #00bbf9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--deep-blue), var(--ocean-blue));
+            color: white;
+            min-height: 100vh;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, var(--light-blue), var(--wave));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            z-index: 2;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--sand);
+            margin-bottom: 20px;
+        }
+
+        .wave-decoration {
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%2394d2bd" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%2394d2bd" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%2394d2bd"/></svg>');
+            background-size: cover;
+            z-index: 1;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, var(--wave), var(--light-blue));
+            color: var(--deep-blue);
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 187, 249, 0.4);
+        }
+
+        .tab-button.active::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--sunset);
+            border-radius: 50%;
+            filter: blur(10px);
+            opacity: 0.7;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .ranking-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ranking-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(10, 147, 150, 0.3), transparent 70%);
+            pointer-events: none;
+        }
+
+        .ranking-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--sand);
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .ranking-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--wave), transparent);
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .ranking-table th {
+            background-color: rgba(0, 95, 115, 0.5);
+            padding: 15px;
+            text-align: left;
+            color: var(--light-blue);
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ranking-table th:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        .ranking-table th:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .ranking-table td {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .ranking-table td:first-child {
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        .ranking-table td:last-child {
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .ranking-table tr:hover td {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ranking-table tr {
+            transition: all 0.3s ease;
+        }
+
+        .rank {
+            font-weight: bold;
+            text-align: center;
+            width: 60px;
+        }
+
+        .rank-1 {
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            color: gold;
+        }
+
+        .rank-2 {
+            background: linear-gradient(45deg, rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.1));
+            color: silver;
+        }
+
+        .rank-3 {
+            background: linear-gradient(45deg, rgba(205, 127, 50, 0.2), rgba(205, 127, 50, 0.1));
+            color: #cd7f32;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .player-name {
+            font-weight: bold;
+        }
+
+        .player-score {
+            font-weight: bold;
+            color: var(--sunset);
+        }
+
+        .player-time {
+            color: var(--light-blue);
+            font-size: 0.9rem;
+        }
+
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--sand);
+            font-size: 0.9rem;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ocean-life {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230a9396"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230a9396"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230a9396"/></svg>');
+            background-size: cover;
+            z-index: -1;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .ranking-title {
+                font-size: 1.5rem;
+            }
+            
+            .ranking-table th, .ranking-table td {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .ranking-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1 style="text-align: center; margin-top: 50vh; transform: translateY(-50%)">Página em Desenvolvimento</h1>
+    <div class="bubbles" id="bubbles"></div>
+    <div class="ocean-life"></div>
+
+    <div class="container">
+        <header>
+            <h1>Ranking Oceânico</h1>
+            <p class="subtitle">Os melhores jogadores dos nossos games</p>
+            <div class="wave-decoration"></div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="quiz">Quiz Oceânico</button>
+            <button class="tab-button" data-tab="peixe">Peixe x Poluição</button>
+            <button class="tab-button" data-tab="limpeza">Limpeza dos Mares</button>
+        </div>
+
+        <div class="tab-content active" id="quiz">
+            <div class="ranking-container">
+                <h2 class="ranking-title">Quiz Oceânico</h2>
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Jogador</th>
+                            <th>Pontuação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quiz-data">
+                        <!-- Dados serão inseridos via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="peixe">
+            <div class="ranking-container">
+                <h2 class="ranking-title">Peixe x Poluição</h2>
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Jogador</th>
+                            <th>Pontuação</th>
+                            <th>Tempo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="peixe-data">
+                        <!-- Dados serão inseridos via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="limpeza">
+            <div class="ranking-container">
+                <h2 class="ranking-title">Limpeza dos Mares</h2>
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Jogador</th>
+                            <th>Lixo Coletado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="limpeza-data">
+                        <!-- Dados serão inseridos via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados de exemplo (substitua pelos dados reais do seu site)
+        const quizPlayers = [
+            { id: 1, name:"Geovanna", score: 9850 },
+            { id: 2, name: "Carlos Ocean", score: 9720, time: "4:45", date: "14/10/2023" },
+            { id: 3, name: "Ana Maré", score: 9650, time: "4:28", date: "16/10/2023" },
+            { id: 4, name: "Pedro Ondas", score: 9420, time: "4:50", date: "13/10/2023" },
+            { id: 5, name: "Julia Água", score: 9350, time: "4:35", date: "15/10/2023" },
+            { id: 6, name: "Lucas Peixe", score: 9200, time: "4:55", date: "14/10/2023" },
+            { id: 7, name: "Isabela Coral", score: 9150, time: "4:40", date: "16/10/2023" },
+            { id: 8, name: "Rafael Concha", score: 9000, time: "5:02", date: "13/10/2023" },
+            { id: 9, name: "Larissa Onda", score: 8950, time: "4:48", date: "15/10/2023" },
+            { id: 10, name: "Bruno Mar", score: 8800, time: "5:10", date: "14/10/2023" }
+        ];
+
+        const peixePlayers = [
+            { id: 1, name: "Mariana Silva", score: 120500, level: 15, date: "15/10/2023", time: "8:15" },
+            { id: 2, name: "Carlos Ocean", score: 118200, level: 15, date: "14/10/2023", time: "8:20" },
+            { id: 3, name: "Ana Maré", score: 115800, level: 14, date: "16/10/2023", time: "8:05" },
+            { id: 4, name: "Pedro Ondas", score: 112000, level: 14, date: "13/10/2023", time: "8:30" },
+            { id: 5, name: "Julia Água", score: 110500, level: 13, date: "15/10/2023", time: "8:18" },
+            { id: 6, name: "Lucas Peixe", score: 108000, level: 13, date: "14/10/2023", time: "8:25" },
+            { id: 7, name: "Isabela Coral", score: 105200, level: 12, date: "16/10/2023", time: "8:10" },
+            { id: 8, name: "Rafael Concha", score: 102500, level: 12, date: "13/10/2023", time: "8:35" },
+            { id: 9, name: "Larissa Onda", score: 100800, level: 11, date: "15/10/2023", time: "8:22" },
+            { id: 10, name: "Bruno Mar", score: 98500, level: 11, date: "14/10/2023", time: "8:40" }
+        ];
+
+        const limpezaPlayers = [
+            { id: 1, name: "Mariana Silva", score: 425, time: "8:15", date: "15/10/2023" },
+            { id: 2, name: "Carlos Ocean", score: 418, time: "8:20", date: "14/10/2023" },
+            { id: 3, name: "Ana Maré", score: 410, time: "8:05", date: "16/10/2023" },
+            { id: 4, name: "Pedro Ondas", score: 402, time: "8:30", date: "13/10/2023" },
+            { id: 5, name: "Julia Água", score: 395, time: "8:18", date: "15/10/2023" },
+            { id: 6, name: "Lucas Peixe", score: 390, time: "8:25", date: "14/10/2023" },
+            { id: 7, name: "Isabela Coral", score: 385, time: "8:10", date: "16/10/2023" },
+            { id: 8, name: "Rafael Concha", score: 380, time: "8:35", date: "13/10/2023" },
+            { id: 9, name: "Larissa Onda", score: 375, time: "8:22", date: "15/10/2023" },
+            { id: 10, name: "Bruno Mar", score: 370, time: "8:40", date: "14/10/2023" }
+        ];
+
+        // Função para renderizar os rankings
+        function renderRankings() {
+            renderQuizRanking();
+            renderPeixeRanking();
+            renderLimpezaRanking();
+        }
+
+        function renderQuizRanking() {
+            const tbody = document.getElementById('quiz-data');
+            tbody.innerHTML = '';
+            
+            quizPlayers.forEach((player, index) => {
+                const row = document.createElement('tr');
+                const rankClass = index < 3 ? `rank-${index + 1}` : '';
+                
+                row.innerHTML = `
+                    <td class="rank ${rankClass}">${index + 1}</td>
+                    <td>
+                        <div class="player-info">
+                            <span class="player-name">${player.name}</span>
+                        </div>
+                    </td>
+                    <td class="player-score">${player.score.toLocaleString()}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderPeixeRanking() {
+            const tbody = document.getElementById('peixe-data');
+            tbody.innerHTML = '';
+            
+            peixePlayers.forEach((player, index) => {
+                const row = document.createElement('tr');
+                const rankClass = index < 3 ? `rank-${index + 1}` : '';
+                
+                row.innerHTML = `
+                    <td class="rank ${rankClass}">${index + 1}</td>
+                    <td>
+                        <div class="player-info">
+                            <span class="player-name">${player.name}</span>
+                        </div>
+                    </td>
+                    <td class="player-score">${player.score.toLocaleString()}</td>
+                    <td class="player-time">${player.time}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderLimpezaRanking() {
+            const tbody = document.getElementById('limpeza-data');
+            tbody.innerHTML = '';
+            
+            limpezaPlayers.forEach((player, index) => {
+                const row = document.createElement('tr');
+                const rankClass = index < 3 ? `rank-${index + 1}` : '';
+                
+                row.innerHTML = `
+                    <td class="rank ${rankClass}">${index + 1}</td>
+                    <td>
+                        <div class="player-info">
+                            <span class="player-name">${player.name}</span>
+                        </div>
+                    </td>
+                    <td class="player-score">${player.score}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Sistema de tabs
+        function setupTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove a classe active de todos os botões e conteúdos
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Adiciona a classe active ao botão clicado
+                    button.classList.add('active');
+                    
+                    // Mostra o conteúdo correspondente
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // Criar bolhas animadas
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            
+            for (let i = 0; i < 50; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Tamanho aleatório
+                const size = Math.random() * 20 + 10;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Posição aleatória
+                bubble.style.left = `${Math.random() * 100}%`;
+                
+                // Animação com duração aleatória
+                const duration = Math.random() * 20 + 10;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                // Atraso aleatório
+                bubble.style.animationDelay = `${Math.random() * 10}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRankings();
+            setupTabs();
+            createBubbles();
+        });
+    </script>
 </body>
 </html>
