@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Forca - Oceano</title>
+    <style>
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: url('https://cdn.pixabay.com/photo/2021/06/04/15/51/coast-6310250_1280.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            min-height: 100vh;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        #menu-inicial {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 50px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .botao-jogo {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            width: 200px;
+            max-width: 100%;
+        }
+
+        .botao-jogo:hover {
+            background-color: #357abd;
+            transform: scale(1.05);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-height: 300px;
+        }
+
+        /* Estilo para o alfabeto */
+        .alfabeto {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 20px;
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        .letra {
+            padding: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4a90e2;
+            border: 2px solid #357abd;
+            border-radius: 5px;
+            text-align: center;
+            width: 30px;
+            min-width: 30px;
+            color: #fff;
+            transition: background-color 0.3s, transform 0.2s;
+            box-sizing: border-box;
+        }
+
+        .letra:hover {
+            background-color: #357abd;
+            transform: scale(1.1);
+        }
+
+        .letra.desabilitada {
+            background-color: #ccc;
+            border-color: #999;
+            cursor: not-allowed;
+            color: #888;
+            transform: none;
+        }
+
+        .letra.acerto {
+            background-color: #4caf50;
+            border-color: #388e3c;
+        }
+
+        .letra.erro {
+            background-color: #f44336;
+            border-color: #d32f2f;
+        }
+
+        /* Estilo para a dica e contador */
+        #dica {
+            font-size: 18px;
+            margin: 20px 0;
+            color: #fff;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        #contador {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #fff;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* Estilo para a pontuação */
+        #pontuacao {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 150px;
+        }
+
+        /* Estilo para a mensagem de resposta */
+        #resposta {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #ffeb3b;
+            font-weight: bold;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* Estilo para o botão de reiniciar */
+        #botao-reiniciar {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #ff5722;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #botao-reiniciar:hover {
+            background-color: #e64a19;
+            transform: scale(1.05);
+        }
+
+        /* Estilo para a exibição da palavra */
+        #exibicao-palavra {
+            font-size: 20px;
+            margin: 20px 0;
+            text-align: center;
+            letter-spacing: 5px;
+            color: #fff;
+            word-break: break-word;
+            padding: 0 10px;
+        }
+
+        /* Estilo para as letras chutadas */
+        #letras-chutadas {
+            font-size: 16px;
+            margin: 10px 0;
+            text-align: center;
+            color: #fff;
+            padding: 0 10px;
+        }
+
+        /* Animação para feedback visual */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        /* Esconde elementos do jogo inicialmente */
+        #jogo-container {
+            display: none;
+            width: 95%;
+            max-width: 800px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-sizing: border-box;
+        }
+
+        /* Media Queries para dispositivos menores */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            .botao-jogo {
+                padding: 12px 20px;
+                font-size: 16px;
+                width: 180px;
+            }
+            
+            #menu-inicial {
+                padding: 20px;
+                margin-top: 20px;
+            }
+            
+            .letra {
+                padding: 6px;
+                font-size: 14px;
+                width: 25px;
+                min-width: 25px;
+            }
+            
+            #exibicao-palavra {
+                font-size: 18px;
+                letter-spacing: 3px;
+            }
+            
+            #dica, #resposta {
+                font-size: 16px;
+            }
+            
+            #contador, #letras-chutadas {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .letra {
+                padding: 5px;
+                font-size: 12px;
+                width: 22px;
+                min-width: 22px;
+            }
+            
+            #exibicao-palavra {
+                font-size: 16px;
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menu inicial -->
+    <div id="menu-inicial">
+        <h1>Jogo da Forca - Oceano</h1>
+        <button class="botao-jogo" onclick="iniciarJogo()">Jogar</button>
+    </div>
+
+    <!-- Container do jogo (inicialmente oculto) -->
+    <div id="jogo-container">
+        <!-- Pontuação no canto superior direito -->
+        <div id="pontuacao">Pontuação: 0</div>
+
+        <!--TOPO -->
+        <h1>Jogo da Forca - Oceano</h1>
+        <img id="imagem" src="https://i.pinimg.com/736x/1a/d8/de/1ad8de967d18e00591accd08f790d165.jpg">
+        <div id="dica"></div>
+        <div id="exibicao-palavra"></div>
+
+        <!-- Alfabeto de A a Z -->
+        <div class="alfabeto" id="alfabeto">
+            <!-- As letras serão geradas dinamicamente pelo JavaScript -->
+        </div>
+
+        <!-- BAIXO-->
+        <h2>Letras Chutadas</h2>
+        <div id="letras-chutadas"></div>
+        <div id="contador">Perguntas acertadas: 0/50</div>
+        <div id="mensagem"></div>
+        <div id="resposta"></div><br>
+        <div style="text-align: center;">
+            <button id="botao-reiniciar" onclick="reiniciarJogo()" style="display: none;">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <!-- LOGICA JAVASCRIPT-->
+    <script>
+        // Variáveis do jogo
+        const perguntas = [
+            { pergunta: "Tubarão", dica: "Predador do oceano" },
+            { pergunta: "Baleia", dica: "Maior mamífero marinho" },
+            { pergunta: "Polvo", dica: "Possui oito tentáculos" },
+            { pergunta: "Coral", dica: "Forma recifes coloridos" },
+            { pergunta: "Golfinho", dica: "Mamífero inteligente e brincalhão" },
+            { pergunta: "Água-viva", dica: "Tem corpo gelatinoso" },
+            { pergunta: "Estrela-do-mar", dica: "Tem forma de estrela" },
+            { pergunta: "Cavalo-marinho", dica: "Pequeno peixe com cabeça de cavalo" },
+            { pergunta: "Tartaruga", dica: "Réptil com casco" },
+            { pergunta: "Foca", dica: "Mamífero que vive em regiões frias" },
+            { pergunta: "Lula", dica: "Parente do polvo" },
+            { pergunta: "Raia", dica: "Tem corpo achatado" },
+            { pergunta: "Caranguejo", dica: "Tem dez patas e garras" },
+            { pergunta: "Anêmona", dica: "Parece uma planta, mas é um animal" },
+            { pergunta: "Peixe-palhaço", dica: "Vive com anêmonas" },
+            { pergunta: "Orca", dica: "Também conhecida como baleia assassina" },
+            { pergunta: "Sardinha", dica: "Peixe pequeno e comum" },
+            { pergunta: "Atum", dica: "Peixe grande e rápido" },
+            { pergunta: "Lagosta", dica: "Tem garras grandes" },
+            { pergunta: "Mexilhão", dica: "Molusco que gruda em rochas" },
+        ];
+
+        let palavraEscolhida;
+        let palavraSemAcento;
+        let exibicaoPalavra;
+        let letrasChutadas;
+        let tentativasRestantes;
+        let numeroErros;
+        let perguntasAcertadas = 0;
+        let perguntasRestantes = [...perguntas];
+
+        // Array com os links das imagens da forca
+        const imagensForca = [
+            "https://i.pinimg.com/736x/1a/d8/de/1ad8de967d18e00591accd08f790d165.jpg",
+            "https://i.pinimg.com/736x/dc/3d/26/dc3d2650e9c0ac790d6691573ab3eb37.jpg",
+            "https://i.pinimg.com/736x/c8/51/d8/c851d8f23d26dd59100013312d567c09.jpg",
+            "https://i.pinimg.com/736x/55/91/19/559119e2f63c26b21866180a3cc2649c.jpg",
+            "https://i.pinimg.com/736x/b3/d0/1b/b3d01b2d5c3d081debe724c7ae7b5e54.jpg",
+            "https://i.pinimg.com/736x/1f/13/cc/1f13cc42cf0d5129a4d877cbca2d1ae4.jpg",
+            "https://i.pinimg.com/736x/8e/78/02/8e7802cf1215bebe73d87cc2bb1360a3.jpg",
+            "https://i.pinimg.com/736x/8b/d3/f7/8bd3f779981a4025308d249a669f7220.jpg"
+        ];
+
+        // Função para remover acentos
+        function removerAcentos(texto) {
+            return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+
+        // Função para iniciar o jogo
+        function iniciarJogo() {
+            document.getElementById('menu-inicial').style.display = 'none';
+            document.getElementById('jogo-container').style.display = 'block';
+            document.getElementById('botao-reiniciar').style.display = 'none';
+            document.getElementById('mensagem').innerText = '';
+            document.getElementById('resposta').innerText = '';
+            
+            perguntasAcertadas = 0;
+            perguntasRestantes = [...perguntas];
+            atualizarContador();
+            atualizarPontuacao();
+            escolherPerguntaAleatoria();
+        }
+
+        // Função para reiniciar o jogo
+        function reiniciarJogo() {
+            document.getElementById('botao-reiniciar').style.display = 'none';
+            document.getElementById('mensagem').innerText = '';
+            document.getElementById('resposta').innerText = '';
+            
+            perguntasRestantes = [...perguntas];
+            perguntasAcertadas = 0;
+            atualizarContador();
+            atualizarPontuacao();
+            escolherPerguntaAleatoria();
+        }
+
+        // Função para escolher uma pergunta aleatória
+        function escolherPerguntaAleatoria() {
+            if (perguntasRestantes.length === 0) {
+                encerrarJogo('Você completou todas as perguntas!');
+                return;
+            }
+
+            const indice = Math.floor(Math.random() * perguntasRestantes.length);
+            const perguntaEscolhida = perguntasRestantes[indice];
+            palavraEscolhida = perguntaEscolhida.pergunta.toLowerCase();
+            palavraSemAcento = removerAcentos(palavraEscolhida);
+            document.getElementById('dica').innerText = `Dica: ${perguntaEscolhida.dica}`;
+
+            perguntasRestantes.splice(indice, 1);
+            exibicaoPalavra = Array(palavraEscolhida.length).fill('_');
+            letrasChutadas = [];
+            tentativasRestantes = 7;
+            numeroErros = 0;
+
+            gerarAlfabeto();
+            atualizarExibicao();
+        }
+
+        // Função para gerar o alfabeto de A a Z + Ç
+        function gerarAlfabeto() {
+            const alfabeto = document.getElementById('alfabeto');
+            alfabeto.innerHTML = '';
+
+            // Adiciona letras de A a Z
+            for (let i = 65; i <= 90; i++) {
+                const letra = String.fromCharCode(i).toLowerCase();
+                const botaoLetra = document.createElement('div');
+                botaoLetra.className = 'letra';
+                botaoLetra.innerText = letra;
+                botaoLetra.addEventListener('click', () => chutarLetra(letra));
+                alfabeto.appendChild(botaoLetra);
+            }
+            
+            // Adiciona a letra Ç
+            const botaoCedilha = document.createElement('div');
+            botaoCedilha.className = 'letra';
+            botaoCedilha.innerText = 'ç';
+            botaoCedilha.addEventListener('click', () => chutarLetra('ç'));
+            alfabeto.appendChild(botaoCedilha);
+        }
+
+        function atualizarExibicao() {
+            document.getElementById("exibicao-palavra").innerText = exibicaoPalavra.join(' ');
+            document.getElementById("letras-chutadas").innerText = `${letrasChutadas.join(', ')}`;
+            document.getElementById("imagem").src = imagensForca[numeroErros];
+
+            if (tentativasRestantes === 0) {
+                encerrarJogo('Você perdeu! Tente novamente.');
+                document.getElementById('resposta').innerText = `A resposta correta era: ${palavraEscolhida}`;
+                document.getElementById('botao-reiniciar').style.display = 'block';
+            } else if (!exibicaoPalavra.includes('_')) {
+                perguntasAcertadas++;
+                atualizarContador();
+                atualizarPontuacao();
+                if (perguntasAcertadas === 50) {
+                    encerrarJogo('Parabéns! Você acertou 50 perguntas!');
+                } else {
+                    escolherPerguntaAleatoria();
+                }
+            }
+        }
+
+        function chutarLetra(letra) {
+            if (letrasChutadas.includes(letra)) {
+                alert('Você já tentou esta letra. Tente outra.');
+                return;
+            }
+
+            letrasChutadas.push(letra);
+
+            const botoesLetras = document.querySelectorAll('.letra');
+            botoesLetras.forEach(botao => {
+                if (botao.innerText === letra) {
+                    if (palavraSemAcento.includes(letra)) {
+                        botao.classList.add('acerto');
+                    } else {
+                        botao.classList.add('erro');
+                        botao.classList.add('shake');
+                    }
+                    botao.classList.add('desabilitada');
+                    botao.style.pointerEvents = 'none';
+                }
+            });
+
+            if (palavraSemAcento.includes(letra)) {
+                for (let i = 0; i < palavraSemAcento.length; i++) {
+                    if (palavraSemAcento[i] === letra) {
+                        exibicaoPalavra[i] = palavraEscolhida[i];
+                    }
+                }
+            } else {
+                tentativasRestantes--;
+                numeroErros++;
+            }
+
+            atualizarExibicao();
+        }
+
+        function atualizarContador() {
+            document.getElementById('contador').innerText = `Perguntas acertadas: ${perguntasAcertadas}/50`;
+        }
+
+        function atualizarPontuacao() {
+            document.getElementById('pontuacao').innerText = `Pontuação: ${perguntasAcertadas}`;
+        }
+
+        function encerrarJogo(mensagem) {
+            document.getElementById('mensagem').style.display = 'block';
+            document.getElementById('mensagem').innerText = mensagem;
+
+            const botoesLetras = document.querySelectorAll('.letra');
+            botoesLetras.forEach(botao => {
+                botao.classList.add('desabilitada');
+                botao.style.pointerEvents = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
